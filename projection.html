@@ -64,6 +64,10 @@
         background-position: center;
         border: none; /* 境界線を消す */
       }
+
+      .invertColor {
+        filter: invert(100%);
+      }
     </style>
   </head>
   <body>
@@ -87,7 +91,10 @@
       let effect2 = "none";
       let mediaList = [];
       let interval = null; // ランダム切り替え用のタイマー
+      let interval_invertColor = null;
       let aspectRatio = "16:9"; // デフォルトのアスペクト比
+      let invertColor = false;
+      let invertColorBPM = null;
 
       // 受信データの処理
       window.addEventListener("message", function (event) {
@@ -105,6 +112,8 @@
         mediaList = data.mediaList;
         randomBpm = data.randomBpm;
         aspectRatio = data.aspectRatio;
+        invertColor = data.invertColor;
+        invertColorBPM = data.invertColorBPM;
 
         applyEffect();
       });
@@ -116,6 +125,7 @@
         const displayText = document.getElementById("displayText");
 
         clearInterval(interval); // 既存のランダム切り替えタイマーをクリア
+        clearInterval(interval_invertColor);
 
         // メディアファイル表示
         if (mediaFile) {
@@ -169,6 +179,12 @@
           mediaElement.style.display = "block"; // その他のエフェクト時はメディアを表示
         }
 
+        if (invertColor) {
+          tilesContainer.classList.add("invertColor");
+        } else {
+          tilesContainer.classList.remove("invertColor");
+        }
+
         // ランダムエフェクトが選択されている場合
         if (effect2 === "random") {
           interval = setInterval(() => {
@@ -184,6 +200,16 @@
               mediaElement.src = randomMedia.url;
             }
           }, (60 / randomBpm) * 1000); // BPMに基づいてランダム切り替え
+        }
+
+        if (invertColor && invertColorBPM) {
+          interval_invertColor = setInterval(() => {
+            if (tilesContainer.classList.contains("invertColor")) {
+              tilesContainer.classList.remove("invertColor");
+            } else {
+              tilesContainer.classList.add("invertColor");
+            }
+          }, (60 / invertColorBPM) * 1000);
         }
       }
     </script>
