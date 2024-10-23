@@ -1,77 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Projection</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: black;
-            color: white;
-            overflow: hidden; /* スクロールバーを非表示 */
-            position: relative; /* 子要素を絶対位置にするため */
-        }
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: black;
+        color: white;
+        overflow: hidden; /* スクロールバーを非表示 */
+        position: relative; /* 子要素を絶対位置にするため */
+      }
 
-        #mediaElement {
-            display: none; /* 初期状態で非表示 */
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%); /* 中央配置 */
-            max-width: 100%; /* 最大幅をウィンドウの幅に */
-            max-height: 100%; /* 最大高さをウィンドウの高さに */
-            object-fit: cover; /* アスペクト比を維持しつつフィット */
-            border: none; /* 境界線を消す */
-        }
+      #mediaElement {
+        display: none; /* 初期状態で非表示 */
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%); /* 中央配置 */
+        max-width: 100%; /* 最大幅をウィンドウの幅に */
+        max-height: 100%; /* 最大高さをウィンドウの高さに */
+        object-fit: cover; /* アスペクト比を維持しつつフィット */
+        border: none; /* 境界線を消す */
+      }
 
-        #logoElement {
-            display: none; /* 初期状態で非表示 */
-            position: absolute;
-            top: 80%; /* ロゴを下に配置 */
-            left: 50%;
-            transform: translate(-50%, -50%); /* 中央配置 */
-            z-index: 10; /* 他の要素の上に表示 */
-            width: 20%; /* ロゴの幅を20%に設定 */
-            height: auto; /* 高さは自動調整 */
-        }
+      #logoElement {
+        display: none; /* 初期状態で非表示 */
+        position: absolute;
+        top: 80%; /* ロゴを下に配置 */
+        left: 50%;
+        transform: translate(-50%, -50%); /* 中央配置 */
+        z-index: 10; /* 他の要素の上に表示 */
+        width: 20%; /* ロゴの幅を20%に設定 */
+        height: auto; /* 高さは自動調整 */
+      }
 
-        #displayText {
-            position: absolute;
-            top: 90%; /* テキストを下に配置 */
-            left: 50%;
-            transform: translate(-50%, -50%); /* 水平方向に中央配置 */
-            font-size: 24px; /* テキストサイズ */
-            color: white; /* テキスト色 */
-            text-align: center; /* 中央揃え */
-            z-index: 20; /* テキストを最前面に表示 */
-        }
+      #displayText {
+        position: absolute;
+        top: 90%; /* テキストを下に配置 */
+        left: 50%;
+        transform: translate(-50%, -50%); /* 水平方向に中央配置 */
+        font-size: 24px; /* テキストサイズ */
+        color: white; /* テキスト色 */
+        text-align: center; /* 中央揃え */
+        z-index: 20; /* テキストを最前面に表示 */
+      }
 
-        #tiles {
-            display: flex; /* タイル表示 */
-            flex-wrap: wrap; /* 複数行にする */
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-        }
+      #tiles {
+        display: flex; /* タイル表示 */
+        flex-wrap: wrap; /* 複数行にする */
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+      }
 
-        .tile {
-            background-size: cover;
-            background-position: center;
-            border: none; /* 境界線を消す */
-        }
+      .tile {
+        background-size: cover;
+        background-position: center;
+        border: none; /* 境界線を消す */
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <!-- メディアファイル表示用 -->
-    <img id="mediaElement" src="" alt="Media Display">
+    <img id="mediaElement" src="" alt="Media Display" />
 
     <!-- ロゴ表示用 -->
-    <img id="logoElement" src="" alt="Logo Display">
+    <img id="logoElement" src="" alt="Logo Display" />
 
     <!-- テキスト表示用 -->
     <div id="displayText"></div>
@@ -79,110 +79,113 @@
     <div id="tiles"></div>
 
     <script>
-        let mediaFile = null;
-        let text = "";
-        let font = "Arial";
-        let logoFile = null;
-        let screenEffect = "none";
-        let effect2 = "none";
-        let mediaList = [];
-        let interval = null; // ランダム切り替え用のタイマー
-        let aspectRatio = "16:9"; // デフォルトのアスペクト比
+      let mediaFile = null;
+      let text = "";
+      let font = "Arial";
+      let logoFile = null;
+      let screenEffect = "none";
+      let effect2 = "none";
+      let mediaList = [];
+      let interval = null; // ランダム切り替え用のタイマー
+      let aspectRatio = "16:9"; // デフォルトのアスペクト比
 
-        // 受信データの処理
-        window.addEventListener('message', function(event) {
-            const data = event.data;
+      // 受信データの処理
+      window.addEventListener("message", function (event) {
+        const data = event.data;
 
-            // 受信データの確認
-            console.log(data);
+        // 受信データの確認
+        console.log(data);
 
-            mediaFile = data.mediaFile;
-            text = data.text;
-            font = data.font;
-            logoFile = data.logoFile;
-            screenEffect = data.screenEffect;
-            effect2 = data.effect2;
-            mediaList = data.mediaList;
-            randomBpm = data.randomBpm;
-            aspectRatio = data.aspectRatio;
+        mediaFile = data.mediaFile;
+        text = data.text;
+        font = data.font;
+        logoFile = data.logoFile;
+        screenEffect = data.screenEffect;
+        effect2 = data.effect2;
+        mediaList = data.mediaList;
+        randomBpm = data.randomBpm;
+        aspectRatio = data.aspectRatio;
 
-            applyEffect();
-        });
+        applyEffect();
+      });
 
-        function applyEffect() {
-            const mediaElement = document.getElementById('mediaElement');
-            const logoElement = document.getElementById('logoElement');
-            const tilesContainer = document.getElementById('tiles');
-            const displayText = document.getElementById('displayText');
+      function applyEffect() {
+        const mediaElement = document.getElementById("mediaElement");
+        const logoElement = document.getElementById("logoElement");
+        const tilesContainer = document.getElementById("tiles");
+        const displayText = document.getElementById("displayText");
 
-            clearInterval(interval); // 既存のランダム切り替えタイマーをクリア
+        clearInterval(interval); // 既存のランダム切り替えタイマーをクリア
 
-            // メディアファイル表示
-            if (mediaFile) {
-                mediaElement.src = mediaFile;
-                mediaElement.style.display = 'block'; // メディアがある場合は表示
-            } else {
-                mediaElement.style.display = 'none'; // メディアがない場合は非表示
-            }
-            
-            // テキスト表示
-            displayText.innerText = text || ''; // innerTextを設定
-            displayText.style.fontFamily = font;
-            displayText.style.display = text ? 'block' : 'none'; // テキストがあれば表示
-
-            // ロゴ表示
-            if (logoFile) {
-                logoElement.src = logoFile;
-                logoElement.style.display = 'block';
-            } else {
-                logoElement.style.display = 'none';
-            }
-
-            // continuous エフェクト（タイル表示）
-            if (screenEffect === 'continuous') {
-                tilesContainer.innerHTML = '';
-                mediaElement.style.display = 'none'; // メディアは非表示
-                tilesContainer.style.display = 'flex';
-
-                let aspectHeight; // アスペクト比に基づく高さの計算
-                if (aspectRatio === '1:1') {
-                    aspectHeight = '1'; // 1:1 の比率
-                } else if (aspectRatio === '4:3') {
-                    aspectHeight = '0.75'; // 4:3 の比率
-                } else if (aspectRatio === '16:9') {
-                    aspectHeight = '0.5625'; // 16:9 の比率
-                }
-
-                for (let i = 0; i < 36; i++) { // 6x6のタイル配置
-                    const tile = document.createElement('div');
-                    tile.className = 'tile';
-                    tile.style.width = 'calc(100% / 6)';
-                    tile.style.paddingTop = `calc(100% / 6 * ${aspectHeight})`; // 選択されたアスペクト比で設定
-                    tile.style.backgroundImage = `url(${mediaFile})`;
-                    tile.style.backgroundSize = 'cover';
-                    tile.style.backgroundPosition = 'center';
-                    tilesContainer.appendChild(tile);
-                }
-            } else {
-                tilesContainer.style.display = 'none';
-                mediaElement.style.display = 'block'; // その他のエフェクト時はメディアを表示
-            }
-
-            // ランダムエフェクトが選択されている場合
-            if (effect2 === 'random') {
-                interval = setInterval(() => {
-                    if (screenEffect === 'continuous') {
-                        Array.from(tilesContainer.children).forEach(tile => {
-                            const randomMedia = mediaList[Math.floor(Math.random() * mediaList.length)];
-                            tile.style.backgroundImage = `url(${randomMedia.url})`;
-                        });
-                    } else if (screenEffect === 'none') {
-                        const randomMedia = mediaList[Math.floor(Math.random() * mediaList.length)];
-                        mediaElement.src = randomMedia.url;
-                    }
-                }, (60 / randomBpm) * 1000); // BPMに基づいてランダム切り替え
-            }
+        // メディアファイル表示
+        if (mediaFile) {
+          mediaElement.src = mediaFile;
+          mediaElement.style.display = "block"; // メディアがある場合は表示
+        } else {
+          mediaElement.style.display = "none"; // メディアがない場合は非表示
         }
+
+        // テキスト表示
+        displayText.innerText = text || ""; // innerTextを設定
+        displayText.style.fontFamily = font;
+        displayText.style.display = text ? "block" : "none"; // テキストがあれば表示
+
+        // ロゴ表示
+        if (logoFile) {
+          logoElement.src = logoFile;
+          logoElement.style.display = "block";
+        } else {
+          logoElement.style.display = "none";
+        }
+
+        // continuous エフェクト（タイル表示）
+        if (screenEffect === "continuous") {
+          tilesContainer.innerHTML = "";
+          mediaElement.style.display = "none"; // メディアは非表示
+          tilesContainer.style.display = "flex";
+
+          let aspectHeight; // アスペクト比に基づく高さの計算
+          if (aspectRatio === "1:1") {
+            aspectHeight = "1"; // 1:1 の比率
+          } else if (aspectRatio === "4:3") {
+            aspectHeight = "0.75"; // 4:3 の比率
+          } else if (aspectRatio === "16:9") {
+            aspectHeight = "0.5625"; // 16:9 の比率
+          }
+
+          for (let i = 0; i < 36; i++) {
+            // 6x6のタイル配置
+            const tile = document.createElement("div");
+            tile.className = "tile";
+            tile.style.width = "calc(100% / 6)";
+            tile.style.paddingTop = `calc(100% / 6 * ${aspectHeight})`; // 選択されたアスペクト比で設定
+            tile.style.backgroundImage = `url(${mediaFile})`;
+            tile.style.backgroundSize = "cover";
+            tile.style.backgroundPosition = "center";
+            tilesContainer.appendChild(tile);
+          }
+        } else {
+          tilesContainer.style.display = "none";
+          mediaElement.style.display = "block"; // その他のエフェクト時はメディアを表示
+        }
+
+        // ランダムエフェクトが選択されている場合
+        if (effect2 === "random") {
+          interval = setInterval(() => {
+            if (screenEffect === "continuous") {
+              Array.from(tilesContainer.children).forEach((tile) => {
+                const randomMedia =
+                  mediaList[Math.floor(Math.random() * mediaList.length)];
+                tile.style.backgroundImage = `url(${randomMedia.url})`;
+              });
+            } else if (screenEffect === "none") {
+              const randomMedia =
+                mediaList[Math.floor(Math.random() * mediaList.length)];
+              mediaElement.src = randomMedia.url;
+            }
+          }, (60 / randomBpm) * 1000); // BPMに基づいてランダム切り替え
+        }
+      }
     </script>
-</body>
+  </body>
 </html>

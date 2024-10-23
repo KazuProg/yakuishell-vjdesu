@@ -1,98 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>settings</title>
     <style>
-        /* 設定画面用のスタイル */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f4f4f4;
-            color: #333;
-        }
+      /* 設定画面用のスタイル */
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background-color: #f4f4f4;
+        color: #333;
+      }
 
-        h1, h2 {
-            margin-bottom: 10px;
-            color: #333;
-        }
+      h1,
+      h2 {
+        margin-bottom: 10px;
+        color: #333;
+      }
 
-        .input-group {
-            margin-bottom: 20px;
-        }
+      .input-group {
+        margin-bottom: 20px;
+      }
 
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
 
-        input[type="file"], input[type="text"], input[type="number"], select {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
+      input[type="file"],
+      input[type="text"],
+      input[type="number"],
+      select {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
 
-        button {
-            padding: 10px 15px;
-            margin-right: 10px;
-            background-color: #5cb85c;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
+      button {
+        padding: 10px 15px;
+        margin-right: 10px;
+        background-color: #5cb85c;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
 
-        button:hover {
-            background-color: #4cae4c;
-        }
+      button:hover {
+        background-color: #4cae4c;
+      }
 
-        #hideLogo {
-            background-color: #d9534f;
-        }
+      #hideLogo {
+        background-color: #d9534f;
+      }
 
-        #hideLogo:hover {
-            background-color: #c9302c;
-        }
+      #hideLogo:hover {
+        background-color: #c9302c;
+      }
 
-        /* メディアプレビュー用 */
-        .preview-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 10px;
-            margin-top: 10px;
-        }
+      /* メディアプレビュー用 */
+      .preview-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 10px;
+        margin-top: 10px;
+      }
 
-        .preview-item {
-            width: 100px;
-            height: 100px;
-            background-size: cover;
-            background-position: center;
-            position: relative;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
+      .preview-item {
+        width: 100px;
+        height: 100px;
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
 
-        .file-name {
-            text-align: center;
-            margin-top: 5px;
-            font-size: 12px;
-            color: #333;
-        }
+      .file-name {
+        text-align: center;
+        margin-top: 5px;
+        font-size: 12px;
+        color: #333;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <h1>VJ Settings</h1>
 
     <!-- メディアファイルのアップロード -->
     <div class="input-group">
-        <label for="media">Upload Media (GIF/PNG/JPG/mp4):</label>
-        <input type="file" id="media" accept="image/gif, image/png, image/jpeg, video/mp4" multiple>
+      <label for="media">Upload Media (GIF/PNG/JPG/mp4):</label>
+      <input
+        type="file"
+        id="media"
+        accept="image/gif, image/png, image/jpeg, video/mp4"
+        multiple
+      />
     </div>
 
     <!-- メディアプレビュー -->
@@ -101,57 +110,69 @@
 
     <!-- テキスト入力 -->
     <div class="input-group">
-        <label for="text">Enter Text:</label>
-        <input type="text" id="text" placeholder="Enter text to display" oninput="sendToProjectionWindow()">
+      <label for="text">Enter Text:</label>
+      <input
+        type="text"
+        id="text"
+        placeholder="Enter text to display"
+        oninput="sendToProjectionWindow()"
+      />
     </div>
 
     <!-- フォント選択 -->
     <div class="input-group">
-        <label for="font">Select Font:</label>
-        <select id="font" onchange="sendToProjectionWindow()">
-            <option value="Arial">Arial</option>
-            <option value="LoveLetter">LoveLetter</option>
-        </select>
+      <label for="font">Select Font:</label>
+      <select id="font" onchange="sendToProjectionWindow()">
+        <option value="Arial">Arial</option>
+        <option value="LoveLetter">LoveLetter</option>
+      </select>
     </div>
 
     <!-- スクリーンエフェクト選択 -->
     <div class="input-group">
-        <label for="screenEffect">Select Screen Effect:</label>
-        <select id="screenEffect" onchange="sendToProjectionWindow()">
-            <option value="none">None</option>
-            <option value="continuous">Tile</option>
-        </select>
+      <label for="screenEffect">Select Screen Effect:</label>
+      <select id="screenEffect" onchange="sendToProjectionWindow()">
+        <option value="none">None</option>
+        <option value="continuous">Tile</option>
+      </select>
     </div>
 
     <!-- アスペクト比選択 -->
     <div class="input-group">
-        <label for="aspectRatio">Select Tile Aspect Ratio:</label>
-        <select id="aspectRatio" onchange="sendToProjectionWindow()">
-            <option value="1:1">1:1</option>
-            <option value="4:3">4:3</option>
-            <option value="16:9">16:9</option>
-        </select>
+      <label for="aspectRatio">Select Tile Aspect Ratio:</label>
+      <select id="aspectRatio" onchange="sendToProjectionWindow()">
+        <option value="1:1">1:1</option>
+        <option value="4:3">4:3</option>
+        <option value="16:9">16:9</option>
+      </select>
     </div>
 
     <!-- ランダムエフェクト選択 -->
     <div class="input-group">
-        <label for="effect2">Select Random Effect:</label>
-        <select id="effect2" onchange="handleEffect2Change()">
-            <option value="none">None</option>
-            <option value="random">Random</option>
-        </select>
+      <label for="effect2">Select Random Effect:</label>
+      <select id="effect2" onchange="handleEffect2Change()">
+        <option value="none">None</option>
+        <option value="random">Random</option>
+      </select>
     </div>
 
     <!-- ランダムエフェクトのBPM設定 -->
-    <div class="input-group" id="randomBpmControl" style="display: none;">
-        <label for="randomBpm">BPM for Random Effect:</label>
-        <input type="number" id="randomBpm" value="120" min="60" max="300" oninput="sendToProjectionWindow()">
+    <div class="input-group" id="randomBpmControl" style="display: none">
+      <label for="randomBpm">BPM for Random Effect:</label>
+      <input
+        type="number"
+        id="randomBpm"
+        value="120"
+        min="60"
+        max="300"
+        oninput="sendToProjectionWindow()"
+      />
     </div>
 
     <!-- ロゴのアップロード -->
     <div class="input-group">
-        <label for="logoUpload">Upload Logo (GIF/PNG):</label>
-        <input type="file" id="logoUpload" accept="image/gif, image/png">
+      <label for="logoUpload">Upload Logo (GIF/PNG):</label>
+      <input type="file" id="logoUpload" accept="image/gif, image/png" />
     </div>
 
     <!-- ロゴプレビュー -->
@@ -162,9 +183,7 @@
     <button id="hideLogo" onclick="hideLogo()">Hide Logo</button>
 
     <!-- 削除モード -->
-    <label>
-        <input type="checkbox" id="deleteMode"> Delete Mode
-    </label>
+    <label> <input type="checkbox" id="deleteMode" /> Delete Mode </label>
 
     <!-- プロジェクションウィンドウのオープンボタン -->
     <button id="openProjection">Open Projection Window</button>
@@ -173,142 +192,154 @@
     <button id="resetEffects">Reset Effects</button>
 
     <script>
-        let projectionWindow;
-        let selectedMedia = null;
-        let selectedText = null;
-        let selectedFont = "Arial";  // デフォルトフォント
-        let selectedLogo = null;
-        let mediaList = []; // メディアリスト
-        let logoList = []; // ロゴリスト
-        let randomBpm = 120;
-        let aspectRatio = "16:9"; // デフォルトのアスペクト比
+      let projectionWindow;
+      let selectedMedia = null;
+      let selectedText = null;
+      let selectedFont = "Arial"; // デフォルトフォント
+      let selectedLogo = null;
+      let mediaList = []; // メディアリスト
+      let logoList = []; // ロゴリスト
+      let randomBpm = 120;
+      let aspectRatio = "16:9"; // デフォルトのアスペクト比
 
-        // メディアファイルをアップロードしてプレビューを表示
-        document.getElementById('media').addEventListener('change', function(event) {
-            const files = event.target.files;
-            const mediaPreview = document.getElementById('mediaPreview');
-            // 既存のプレビューをクリアするのではなく、上書きしない
-            Array.from(files).forEach(file => {
-                const url = URL.createObjectURL(file);
-                mediaList.push({ name: file.name, url: url }); // メディアリストに追加
-
-                // プレビューを作成（静止画として表示）
-                const previewItem = document.createElement('div');
-                previewItem.className = 'preview-item';
-                previewItem.style.backgroundImage = `url(${url})`;
-
-                const fileName = document.createElement('div');
-                fileName.className = 'file-name';
-                fileName.textContent = file.name;
-
-                previewItem.appendChild(fileName);
-                mediaPreview.appendChild(previewItem);
-
-                // クリックでメディアを選択
-                previewItem.addEventListener('click', () => {
-                    if (document.getElementById('deleteMode').checked) {
-                        mediaPreview.removeChild(previewItem);
-
-                        // メディアリストから削除
-                        mediaList = mediaList.filter(media => media.url !== url);
-                        sendToProjectionWindow();
-                    } else {
-                        selectedMedia = url;
-                        sendToProjectionWindow();
-                    }
-                });
-            });
-        });
-
-        // ロゴアップロード処理
-        document.getElementById('logoUpload').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            const logoPreview = document.getElementById('logoPreview');
-
+      // メディアファイルをアップロードしてプレビューを表示
+      document
+        .getElementById("media")
+        .addEventListener("change", function (event) {
+          const files = event.target.files;
+          const mediaPreview = document.getElementById("mediaPreview");
+          // 既存のプレビューをクリアするのではなく、上書きしない
+          Array.from(files).forEach((file) => {
             const url = URL.createObjectURL(file);
-            logoList.push({ name: file.name, url: url }); // ロゴリストに追加
+            mediaList.push({ name: file.name, url: url }); // メディアリストに追加
 
-            // プレビューを作成
-            const previewItem = document.createElement('div');
-            previewItem.className = 'preview-item';
+            // プレビューを作成（静止画として表示）
+            const previewItem = document.createElement("div");
+            previewItem.className = "preview-item";
             previewItem.style.backgroundImage = `url(${url})`;
 
-            const fileName = document.createElement('div');
-            fileName.className = 'file-name';
+            const fileName = document.createElement("div");
+            fileName.className = "file-name";
             fileName.textContent = file.name;
 
             previewItem.appendChild(fileName);
-            logoPreview.appendChild(previewItem);
+            mediaPreview.appendChild(previewItem);
 
-            // クリックでロゴを選択
-            previewItem.addEventListener('click', () => {
-                if (document.getElementById('deleteMode').checked) {
-                    logoPreview.removeChild(previewItem);
-                    logoList = logoList.filter(logo => logo.url !== url); // ロゴリストから削除
-                    sendToProjectionWindow();
-                } else {
-                    selectedLogo = url;
-                    sendToProjectionWindow();
-                }
+            // クリックでメディアを選択
+            previewItem.addEventListener("click", () => {
+              if (document.getElementById("deleteMode").checked) {
+                mediaPreview.removeChild(previewItem);
+
+                // メディアリストから削除
+                mediaList = mediaList.filter((media) => media.url !== url);
+                sendToProjectionWindow();
+              } else {
+                selectedMedia = url;
+                sendToProjectionWindow();
+              }
             });
+          });
         });
 
-        // ロゴ非表示ボタン
-        function hideLogo() {
-            selectedLogo = null;
-            sendToProjectionWindow();
-        }
+      // ロゴアップロード処理
+      document
+        .getElementById("logoUpload")
+        .addEventListener("change", function (event) {
+          const file = event.target.files[0];
+          const logoPreview = document.getElementById("logoPreview");
 
-        // effect2変更時の処理
-        function handleEffect2Change() {
-            const effect2 = document.getElementById('effect2').value;
-            if (effect2 === 'random') {
-                document.getElementById('randomBpmControl').style.display = 'block';
+          const url = URL.createObjectURL(file);
+          logoList.push({ name: file.name, url: url }); // ロゴリストに追加
+
+          // プレビューを作成
+          const previewItem = document.createElement("div");
+          previewItem.className = "preview-item";
+          previewItem.style.backgroundImage = `url(${url})`;
+
+          const fileName = document.createElement("div");
+          fileName.className = "file-name";
+          fileName.textContent = file.name;
+
+          previewItem.appendChild(fileName);
+          logoPreview.appendChild(previewItem);
+
+          // クリックでロゴを選択
+          previewItem.addEventListener("click", () => {
+            if (document.getElementById("deleteMode").checked) {
+              logoPreview.removeChild(previewItem);
+              logoList = logoList.filter((logo) => logo.url !== url); // ロゴリストから削除
+              sendToProjectionWindow();
             } else {
-                document.getElementById('randomBpmControl').style.display = 'none';
+              selectedLogo = url;
+              sendToProjectionWindow();
             }
-            sendToProjectionWindow();
-        }
-
-        // プロジェクションウィンドウを開く
-        document.getElementById('openProjection').addEventListener('click', function() {
-            projectionWindow = window.open('projection.html', 'Projection Window', 'width=800,height=600');
+          });
         });
 
-        // リセットボタン
-        document.getElementById('resetEffects').addEventListener('click', function() {
-            selectedMedia = null;
-            selectedText = null;
-            selectedFont = "Arial";  // リセット時のフォントはデフォルト
-            selectedLogo = null;
-            document.getElementById('screenEffect').value = 'none';
-            document.getElementById('effect2').value = 'none';
-            document.getElementById('randomBpmControl').style.display = 'none';
-            document.getElementById('aspectRatio').value = '16:9';
-            sendToProjectionWindow();
+      // ロゴ非表示ボタン
+      function hideLogo() {
+        selectedLogo = null;
+        sendToProjectionWindow();
+      }
+
+      // effect2変更時の処理
+      function handleEffect2Change() {
+        const effect2 = document.getElementById("effect2").value;
+        if (effect2 === "random") {
+          document.getElementById("randomBpmControl").style.display = "block";
+        } else {
+          document.getElementById("randomBpmControl").style.display = "none";
+        }
+        sendToProjectionWindow();
+      }
+
+      // プロジェクションウィンドウを開く
+      document
+        .getElementById("openProjection")
+        .addEventListener("click", function () {
+          projectionWindow = window.open(
+            "projection.html",
+            "Projection Window",
+            "width=800,height=600"
+          );
         });
 
-        // プロジェクションウィンドウにデータを送信
-        function sendToProjectionWindow() {
-            if (projectionWindow && !projectionWindow.closed) {
-                const screenEffect = document.getElementById('screenEffect').value;
-                const effect2 = document.getElementById('effect2').value;
-                randomBpm = document.getElementById('randomBpm').value;
-                aspectRatio = document.getElementById('aspectRatio').value;
-                const data = {
-                    mediaFile: selectedMedia,
-                    text: document.getElementById('text').value,
-                    font: document.getElementById('font').value,
-                    logoFile: selectedLogo,
-                    screenEffect: screenEffect,
-                    effect2: effect2,
-                    randomBpm: randomBpm,
-                    mediaList: mediaList,
-                    aspectRatio: aspectRatio
-                };
-                projectionWindow.postMessage(data, '*');
-            }
+      // リセットボタン
+      document
+        .getElementById("resetEffects")
+        .addEventListener("click", function () {
+          selectedMedia = null;
+          selectedText = null;
+          selectedFont = "Arial"; // リセット時のフォントはデフォルト
+          selectedLogo = null;
+          document.getElementById("screenEffect").value = "none";
+          document.getElementById("effect2").value = "none";
+          document.getElementById("randomBpmControl").style.display = "none";
+          document.getElementById("aspectRatio").value = "16:9";
+          sendToProjectionWindow();
+        });
+
+      // プロジェクションウィンドウにデータを送信
+      function sendToProjectionWindow() {
+        if (projectionWindow && !projectionWindow.closed) {
+          const screenEffect = document.getElementById("screenEffect").value;
+          const effect2 = document.getElementById("effect2").value;
+          randomBpm = document.getElementById("randomBpm").value;
+          aspectRatio = document.getElementById("aspectRatio").value;
+          const data = {
+            mediaFile: selectedMedia,
+            text: document.getElementById("text").value,
+            font: document.getElementById("font").value,
+            logoFile: selectedLogo,
+            screenEffect: screenEffect,
+            effect2: effect2,
+            randomBpm: randomBpm,
+            mediaList: mediaList,
+            aspectRatio: aspectRatio,
+          };
+          projectionWindow.postMessage(data, "*");
         }
+      }
     </script>
-</body>
+  </body>
 </html>
