@@ -87,7 +87,7 @@ function applyEffect() {
           VJ_DATA.mediaList[
             Math.floor(Math.random() * VJ_DATA.mediaList.length)
           ];
-        tile.style.backgroundImage = `url(${randomMedia.url})`;
+        tile.src = randomMedia.url;
       });
     }, (60 / VJ_DATA.randomBpm) * 1000); // BPMに基づいてランダム切り替え
   }
