@@ -13,7 +13,17 @@ let invertColorBPM = null;
 
 // 受信データの処理
 window.addEventListener("message", function (event) {
-  const data = event.data;
+  if (PAGE_ORIGIN && event.origin !== PAGE_ORIGIN) {
+    console.warn("Unauthorized message origin in postMessage:", event.origin);
+    return;
+  }
+
+  if (!("vjdesu" in event.data)) {
+    console.warn("Unrecognized data format in postMessage:", event.data);
+    return;
+  }
+
+  const data = event.data.vjdesu;
 
   // 受信データの確認
   console.log(data);

@@ -154,6 +154,6 @@ function sendToProjectionWindow() {
       invertColor,
       invertColorBPM,
     };
-    projectionWindow.postMessage(data, "*");
+    projectionWindow.postMessage({ vjdesu: data }, PAGE_ORIGIN || "*");
   }
 }
