@@ -23,7 +23,6 @@ window.addEventListener("message", function (event) {
 });
 
 function applyEffect() {
-  const mediaElement = document.getElementById("mediaElement");
   const logoElement = document.getElementById("logoElement");
   const mediaContainer = document.getElementById("media");
   const displayText = document.getElementById("displayText");
@@ -61,24 +60,17 @@ function applyEffect() {
     mediaContainer.innerHTML = "";
     for (let i = 0; i < 36; i++) {
       // 6x6のタイル配置
-      const tile = document.createElement("div");
-      tile.className = "tile";
-      tile.style.width = "calc(100% / 6)";
-      tile.style.paddingTop = `calc(100% / 6 * ${aspectHeight})`; // 選択されたアスペクト比で設定
-      tile.style.backgroundImage = `url(${VJ_DATA.mediaFile})`;
-      tile.style.backgroundSize = "cover";
-      tile.style.backgroundPosition = "center";
+      const tile = createMediaElem(VJ_DATA.mediaFile);
+      tile.style.width = "calc(100vw / 6)";
+      tile.style.height = "calc(100vw / 6)";
       mediaContainer.appendChild(tile);
     }
   } else if (VJ_DATA.screenEffect === "single") {
     mediaContainer.innerHTML = "";
-    const media = document.createElement("div");
-    media.style.width = "100vw";
-    media.style.height = "100vh";
-    media.style.backgroundImage = `url(${VJ_DATA.mediaFile})`;
-    media.style.backgroundSize = "cover";
-    media.style.backgroundPosition = "center";
-    mediaContainer.appendChild(media);
+    const mediaElem = createMediaElem(VJ_DATA.mediaFile);
+    mediaElem.style.width = "100vw";
+    mediaElem.style.height = "100vh";
+    mediaContainer.appendChild(mediaElem);
   }
 
   if (VJ_DATA.invertColor) {
@@ -109,4 +101,23 @@ function applyEffect() {
       }
     }, (60 / VJ_DATA.invertColorBPM) * 1000);
   }
+}
+
+function createMediaElem(url) {
+  const mediaType = VJ_DATA.mediaList.find((item) => item.url === url)?.type;
+  let mediaElem;
+  if (mediaType === "image") {
+    mediaElem = document.createElement("img");
+    mediaElem.src = url;
+  }
+  if (mediaType === "video") {
+    mediaElem = document.createElement("video");
+    mediaElem.src = url;
+    mediaElem.muted = true;
+    mediaElem.autoplay = true;
+    mediaElem.controls = false;
+    mediaElem.loop = true;
+  }
+  mediaElem.style.objectFit = "cover";
+  return mediaElem;
 }

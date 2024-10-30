@@ -42,7 +42,7 @@ body {
   flex-wrap: wrap; /* 複数行にする */
 }
 
-.tile {
+#media.tile > * {
   background-size: cover;
   background-position: center;
   border: none; /* 境界線を消す */

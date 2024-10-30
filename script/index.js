@@ -8,12 +8,20 @@ document.getElementById("media").addEventListener("change", function (event) {
   // 既存のプレビューをクリアするのではなく、上書きしない
   Array.from(files).forEach((file) => {
     const url = URL.createObjectURL(file);
-    VJ_DATA.mediaList.push({ name: file.name, url: url }); // メディアリストに追加
+    const media = { name: file.name, type: file.type.split("/")[0], url: url };
+    VJ_DATA.mediaList.push(media); // メディアリストに追加
 
     // プレビューを作成（静止画として表示）
     const previewItem = document.createElement("div");
     previewItem.className = "preview-item";
-    previewItem.style.backgroundImage = `url(${url})`;
+    if (media.type === "image") {
+      previewItem.style.backgroundImage = `url(${url})`;
+    }
+    if (media.type === "video") {
+      const video = document.createElement("video");
+      video.src = url;
+      previewItem.appendChild(video);
+    }
 
     const fileName = document.createElement("div");
     fileName.className = "file-name";
@@ -33,7 +41,11 @@ document.getElementById("media").addEventListener("change", function (event) {
         );
         sendToProjectionWindow();
       } else {
-        VJ_DATA.mediaFile = url;
+        VJ_DATA.mediaFile = media.url;
+        if (media.type === "video") {
+          VJ_DATA.screenEffect = "single";
+          document.getElementById("screenEffect").value = "single";
+        }
         sendToProjectionWindow();
       }
     });
