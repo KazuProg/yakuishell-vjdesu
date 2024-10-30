@@ -8,18 +8,6 @@ body {
   position: relative; /* 子要素を絶対位置にするため */
 }
 
-#mediaElement {
-  display: none; /* 初期状態で非表示 */
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%); /* 中央配置 */
-  max-width: 100%; /* 最大幅をウィンドウの幅に */
-  max-height: 100%; /* 最大高さをウィンドウの高さに */
-  object-fit: cover; /* アスペクト比を維持しつつフィット */
-  border: none; /* 境界線を消す */
-}
-
 #logoElement {
   display: none; /* 初期状態で非表示 */
   position: absolute;
@@ -42,14 +30,16 @@ body {
   z-index: 20; /* テキストを最前面に表示 */
 }
 
-#tiles {
-  display: flex; /* タイル表示 */
-  flex-wrap: wrap; /* 複数行にする */
+#media {
   position: absolute;
   width: 100%;
   height: 100%;
-  top: 0;
-  left: 0;
+  inset: 0;
+}
+
+#media.tile {
+  display: flex; /* タイル表示 */
+  flex-wrap: wrap; /* 複数行にする */
 }
 
 .tile {
