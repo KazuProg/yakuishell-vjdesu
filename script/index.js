@@ -1,14 +1,5 @@
 let projectionWindow;
-let selectedMedia = null;
-let selectedText = null;
-let selectedFont = "Arial"; // デフォルトフォント
-let selectedLogo = null;
-let mediaList = []; // メディアリスト
 let logoList = []; // ロゴリスト
-let randomBpm = 120;
-let aspectRatio = "16:9"; // デフォルトのアスペクト比
-let invertColor = false;
-let invertColorBPM = null;
 
 // メディアファイルをアップロードしてプレビューを表示
 document.getElementById("media").addEventListener("change", function (event) {
@@ -17,7 +8,7 @@ document.getElementById("media").addEventListener("change", function (event) {
   // 既存のプレビューをクリアするのではなく、上書きしない
   Array.from(files).forEach((file) => {
     const url = URL.createObjectURL(file);
-    mediaList.push({ name: file.name, url: url }); // メディアリストに追加
+    VJ_DATA.mediaList.push({ name: file.name, url: url }); // メディアリストに追加
 
     // プレビューを作成（静止画として表示）
     const previewItem = document.createElement("div");
@@ -37,10 +28,12 @@ document.getElementById("media").addEventListener("change", function (event) {
         mediaPreview.removeChild(previewItem);
 
         // メディアリストから削除
-        mediaList = mediaList.filter((media) => media.url !== url);
+        VJ_DATA.mediaList = VJ_DATA.mediaList.filter(
+          (media) => media.url !== url
+        );
         sendToProjectionWindow();
       } else {
-        selectedMedia = url;
+        VJ_DATA.mediaFile = url;
         sendToProjectionWindow();
       }
     });
@@ -76,7 +69,7 @@ document
         logoList = logoList.filter((logo) => logo.url !== url); // ロゴリストから削除
         sendToProjectionWindow();
       } else {
-        selectedLogo = url;
+        VJ_DATA.logoFile = url;
         sendToProjectionWindow();
       }
     });
@@ -84,7 +77,7 @@ document
 
 // ロゴ非表示ボタン
 function hideLogo() {
-  selectedLogo = null;
+  VJ_DATA.logoFile = null;
   sendToProjectionWindow();
 }
 
@@ -100,8 +93,8 @@ function handleEffect2Change() {
 }
 
 document.querySelector("#invertColor").addEventListener("change", (e) => {
-  invertColor = e.target.checked;
-  if (invertColor) {
+  VJ_DATA.invertColor = e.target.checked;
+  if (VJ_DATA.invertColor) {
     document.getElementById("invertColorBpmControl").style.display = "block";
   } else {
     document.getElementById("invertColorBpmControl").style.display = "none";
@@ -122,10 +115,11 @@ document
 
 // リセットボタン
 document.getElementById("resetEffects").addEventListener("click", function () {
-  selectedMedia = null;
-  selectedText = null;
-  selectedFont = "Arial"; // リセット時のフォントはデフォルト
-  selectedLogo = null;
+  VJ_DATA.mediaFile = null;
+  VJ_DATA.text = null;
+  VJ_DATA.font = "Arial"; // リセット時のフォントはデフォルト
+  VJ_DATA.logoFile = null;
+  document.getElementById("text").value = null;
   document.getElementById("screenEffect").value = "none";
   document.getElementById("effect2").value = "none";
   document.getElementById("randomBpmControl").style.display = "none";
@@ -136,24 +130,14 @@ document.getElementById("resetEffects").addEventListener("click", function () {
 // プロジェクションウィンドウにデータを送信
 function sendToProjectionWindow() {
   if (projectionWindow && !projectionWindow.closed) {
-    const screenEffect = document.getElementById("screenEffect").value;
-    const effect2 = document.getElementById("effect2").value;
-    randomBpm = document.getElementById("randomBpm").value;
-    invertColorBPM = document.getElementById("invertColorBpm").value || null;
-    aspectRatio = document.getElementById("aspectRatio").value;
-    const data = {
-      mediaFile: selectedMedia,
-      text: document.getElementById("text").value,
-      font: document.getElementById("font").value,
-      logoFile: selectedLogo,
-      screenEffect: screenEffect,
-      effect2: effect2,
-      randomBpm: randomBpm,
-      mediaList: mediaList,
-      aspectRatio: aspectRatio,
-      invertColor,
-      invertColorBPM,
-    };
-    projectionWindow.postMessage({ vjdesu: data }, PAGE_ORIGIN || "*");
+    VJ_DATA.text = document.getElementById("text").value;
+    VJ_DATA.font = document.getElementById("font").value;
+    VJ_DATA.randomBpm = parseFloat(document.getElementById("randomBpm").value);
+    VJ_DATA.aspectRatio = document.getElementById("aspectRatio").value;
+    VJ_DATA.invertColorBPM =
+      document.getElementById("invertColorBpm").value || null;
+    VJ_DATA.effect2 = document.getElementById("effect2").value;
+    VJ_DATA.screenEffect = document.getElementById("screenEffect").value;
+    projectionWindow.postMessage({ vjdesu: VJ_DATA }, PAGE_ORIGIN || "*");
   }
 }

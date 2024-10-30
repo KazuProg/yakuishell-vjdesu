@@ -1,15 +1,5 @@
-let mediaFile = null;
-let text = "";
-let font = "Arial";
-let logoFile = null;
-let screenEffect = "none";
-let effect2 = "none";
-let mediaList = [];
 let interval = null; // ランダム切り替え用のタイマー
 let interval_invertColor = null;
-let aspectRatio = "16:9"; // デフォルトのアスペクト比
-let invertColor = false;
-let invertColorBPM = null;
 
 // 受信データの処理
 window.addEventListener("message", function (event) {
@@ -25,20 +15,9 @@ window.addEventListener("message", function (event) {
 
   const data = event.data.vjdesu;
 
-  // 受信データの確認
-  console.log(data);
-
-  mediaFile = data.mediaFile;
-  text = data.text;
-  font = data.font;
-  logoFile = data.logoFile;
-  screenEffect = data.screenEffect;
-  effect2 = data.effect2;
-  mediaList = data.mediaList;
-  randomBpm = data.randomBpm;
-  aspectRatio = data.aspectRatio;
-  invertColor = data.invertColor;
-  invertColorBPM = data.invertColorBPM;
+  for (const key in data) {
+    VJ_DATA[key] = data[key];
+  }
 
   applyEffect();
 });
@@ -53,38 +32,38 @@ function applyEffect() {
   clearInterval(interval_invertColor);
 
   // メディアファイル表示
-  if (mediaFile) {
-    mediaElement.src = mediaFile;
+  if (VJ_DATA.mediaFile) {
+    mediaElement.src = VJ_DATA.mediaFile;
     mediaElement.style.display = "block"; // メディアがある場合は表示
   } else {
     mediaElement.style.display = "none"; // メディアがない場合は非表示
   }
 
   // テキスト表示
-  displayText.innerText = text || ""; // innerTextを設定
-  displayText.style.fontFamily = font;
-  displayText.style.display = text ? "block" : "none"; // テキストがあれば表示
+  displayText.innerText = VJ_DATA.text || ""; // innerTextを設定
+  displayText.style.fontFamily = VJ_DATA.font;
+  displayText.style.display = VJ_DATA.text ? "block" : "none"; // テキストがあれば表示
 
   // ロゴ表示
-  if (logoFile) {
-    logoElement.src = logoFile;
+  if (VJ_DATA.logoFile) {
+    logoElement.src = VJ_DATA.logoFile;
     logoElement.style.display = "block";
   } else {
     logoElement.style.display = "none";
   }
 
   // continuous エフェクト（タイル表示）
-  if (screenEffect === "continuous") {
+  if (VJ_DATA.screenEffect === "continuous") {
     tilesContainer.innerHTML = "";
     mediaElement.style.display = "none"; // メディアは非表示
     tilesContainer.style.display = "flex";
 
     let aspectHeight; // アスペクト比に基づく高さの計算
-    if (aspectRatio === "1:1") {
+    if (VJ_DATA.aspectRatio === "1:1") {
       aspectHeight = "1"; // 1:1 の比率
-    } else if (aspectRatio === "4:3") {
+    } else if (VJ_DATA.aspectRatio === "4:3") {
       aspectHeight = "0.75"; // 4:3 の比率
-    } else if (aspectRatio === "16:9") {
+    } else if (VJ_DATA.aspectRatio === "16:9") {
       aspectHeight = "0.5625"; // 16:9 の比率
     }
 
@@ -94,7 +73,7 @@ function applyEffect() {
       tile.className = "tile";
       tile.style.width = "calc(100% / 6)";
       tile.style.paddingTop = `calc(100% / 6 * ${aspectHeight})`; // 選択されたアスペクト比で設定
-      tile.style.backgroundImage = `url(${mediaFile})`;
+      tile.style.backgroundImage = `url(${VJ_DATA.mediaFile})`;
       tile.style.backgroundSize = "cover";
       tile.style.backgroundPosition = "center";
       tilesContainer.appendChild(tile);
@@ -104,36 +83,40 @@ function applyEffect() {
     mediaElement.style.display = "block"; // その他のエフェクト時はメディアを表示
   }
 
-  if (invertColor) {
+  if (VJ_DATA.invertColor) {
     tilesContainer.classList.add("invertColor");
   } else {
     tilesContainer.classList.remove("invertColor");
   }
 
   // ランダムエフェクトが選択されている場合
-  if (effect2 === "random") {
+  if (VJ_DATA.effect2 === "random") {
     interval = setInterval(() => {
-      if (screenEffect === "continuous") {
+      if (VJ_DATA.screenEffect === "continuous") {
         Array.from(tilesContainer.children).forEach((tile) => {
           const randomMedia =
-            mediaList[Math.floor(Math.random() * mediaList.length)];
+            VJ_DATA.mediaList[
+              Math.floor(Math.random() * VJ_DATA.mediaList.length)
+            ];
           tile.style.backgroundImage = `url(${randomMedia.url})`;
         });
-      } else if (screenEffect === "none") {
+      } else if (VJ_DATA.screenEffect === "none") {
         const randomMedia =
-          mediaList[Math.floor(Math.random() * mediaList.length)];
+          VJ_DATA.mediaList[
+            Math.floor(Math.random() * VJ_DATA.mediaList.length)
+          ];
         mediaElement.src = randomMedia.url;
       }
-    }, (60 / randomBpm) * 1000); // BPMに基づいてランダム切り替え
+    }, (60 / VJ_DATA.randomBpm) * 1000); // BPMに基づいてランダム切り替え
   }
 
-  if (invertColor && invertColorBPM) {
+  if (VJ_DATA.invertColor && VJ_DATA.invertColorBPM) {
     interval_invertColor = setInterval(() => {
       if (tilesContainer.classList.contains("invertColor")) {
         tilesContainer.classList.remove("invertColor");
       } else {
         tilesContainer.classList.add("invertColor");
       }
-    }, (60 / invertColorBPM) * 1000);
+    }, (60 / VJ_DATA.invertColorBPM) * 1000);
   }
 }
