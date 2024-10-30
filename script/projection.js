@@ -62,7 +62,7 @@ function applyEffect() {
       // 6x6のタイル配置
       const tile = createMediaElem(VJ_DATA.mediaFile);
       tile.style.width = "calc(100vw / 6)";
-      tile.style.height = "calc(100vw / 6)";
+      tile.style.height = `calc(100vw / 6 * ${aspectHeight})`;
       mediaContainer.appendChild(tile);
     }
   } else if (VJ_DATA.screenEffect === "single") {
