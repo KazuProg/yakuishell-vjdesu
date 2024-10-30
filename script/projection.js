@@ -87,7 +87,7 @@ function applyEffect() {
           VJ_DATA.mediaList[
             Math.floor(Math.random() * VJ_DATA.mediaList.length)
           ];
-        tile.src = randomMedia.url;
+        tile.style.backgroundImage = `url(${randomMedia.url})`;
       });
     }, (60 / VJ_DATA.randomBpm) * 1000); // BPMに基づいてランダム切り替え
   }
@@ -107,8 +107,10 @@ function createMediaElem(url) {
   const mediaType = VJ_DATA.mediaList.find((item) => item.url === url)?.type;
   let mediaElem;
   if (mediaType === "image") {
-    mediaElem = document.createElement("img");
-    mediaElem.src = url;
+    mediaElem = document.createElement("div");
+    mediaElem.style.backgroundImage = `url(${url})`;
+    mediaElem.style.backgroundSize = "cover";
+    mediaElem.style.backgroundPosition = "center";
   }
   if (mediaType === "video") {
     mediaElem = document.createElement("video");
