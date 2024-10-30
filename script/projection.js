@@ -44,6 +44,7 @@ function applyEffect() {
   }
 
   mediaContainer.classList.remove("tile");
+  mediaContainer.innerHTML = "";
   // continuous エフェクト（タイル表示）
   if (VJ_DATA.screenEffect === "continuous") {
     mediaContainer.classList.add("tile");
@@ -57,7 +58,6 @@ function applyEffect() {
       aspectHeight = "0.5625"; // 16:9 の比率
     }
 
-    mediaContainer.innerHTML = "";
     for (let i = 0; i < 36; i++) {
       // 6x6のタイル配置
       const tile = createMediaElem(VJ_DATA.mediaFile);
@@ -66,7 +66,6 @@ function applyEffect() {
       mediaContainer.appendChild(tile);
     }
   } else if (VJ_DATA.screenEffect === "single") {
-    mediaContainer.innerHTML = "";
     const mediaElem = createMediaElem(VJ_DATA.mediaFile);
     mediaElem.style.width = "100vw";
     mediaElem.style.height = "100vh";
