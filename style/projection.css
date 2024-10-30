@@ -33,8 +33,8 @@ body {
 
 #displayText {
   position: absolute;
-  top: 90%; /* テキストを下に配置 */
-  left: 50%;
+  top: 50vh; /* テキストを下に配置 */
+  left: 50vh;
   transform: translate(-50%, -50%); /* 水平方向に中央配置 */
   font-size: 24px; /* テキストサイズ */
   color: white; /* テキスト色 */
