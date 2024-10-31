@@ -1,10 +1,57 @@
 let projectionWindow;
-let logoList = []; // ロゴリスト
+let logo = null;
+
+let isShiftPressed = false;
+
+document.addEventListener("keydown", (event) => {
+  isShiftPressed = event.shiftKey;
+  _switchShift();
+});
+
+document.addEventListener("keyup", (event) => {
+  isShiftPressed = false;
+  _switchShift();
+});
+
+function _switchShift() {
+  if (isShiftPressed && !document.body.classList.contains("shift")) {
+    document.body.classList.add("shift");
+  }
+  if (!isShiftPressed && document.body.classList.contains("shift")) {
+    document.body.classList.remove("shift");
+  }
+}
+
+const medias = document.getElementById("medias");
+const medias_fileInput = document.getElementById("media");
+
+medias.addEventListener("dragover", (event) => {
+  event.preventDefault();
+  medias.classList.add("highlight");
+});
+
+medias.addEventListener("dragleave", () => {
+  medias.classList.remove("highlight");
+});
+
+medias.addEventListener("drop", (event) => {
+  event.preventDefault();
+  medias.classList.remove("highlight");
+
+  const files = event.dataTransfer.files;
+  if (files.length) {
+    medias_fileInput.files = files;
+    medias_fileInput.dispatchEvent(new Event("change"));
+  }
+});
+
+document.getElementById("add-media").addEventListener("click", () => {
+  medias_fileInput.click();
+});
 
 // メディアファイルをアップロードしてプレビューを表示
-document.getElementById("media").addEventListener("change", function (event) {
+medias_fileInput.addEventListener("change", function (event) {
   const files = event.target.files;
-  const mediaPreview = document.getElementById("mediaPreview");
   // 既存のプレビューをクリアするのではなく、上書きしない
   Array.from(files).forEach((file) => {
     const url = URL.createObjectURL(file);
@@ -13,7 +60,7 @@ document.getElementById("media").addEventListener("change", function (event) {
 
     // プレビューを作成（静止画として表示）
     const previewItem = document.createElement("div");
-    previewItem.className = "preview-item";
+    previewItem.className = "item";
     if (media.type === "image") {
       previewItem.style.backgroundImage = `url(${url})`;
     }
@@ -28,12 +75,12 @@ document.getElementById("media").addEventListener("change", function (event) {
     fileName.textContent = file.name;
 
     previewItem.appendChild(fileName);
-    mediaPreview.appendChild(previewItem);
+    medias.appendChild(previewItem);
 
     // クリックでメディアを選択
     previewItem.addEventListener("click", () => {
-      if (document.getElementById("deleteMode").checked) {
-        mediaPreview.removeChild(previewItem);
+      if (isShiftPressed) {
+        medias.removeChild(previewItem);
 
         // メディアリストから削除
         VJ_DATA.mediaList = VJ_DATA.mediaList.filter(
@@ -52,64 +99,54 @@ document.getElementById("media").addEventListener("change", function (event) {
   });
 });
 
-// ロゴアップロード処理
-document
-  .getElementById("logoUpload")
-  .addEventListener("change", function (event) {
-    const file = event.target.files[0];
-    const logoPreview = document.getElementById("logoPreview");
+const logo_droparea = document.getElementById("logoDroparea");
+const logo_preview = document.getElementById("logoPreview");
+const logo_fileInput = document.getElementById("logo");
 
-    const url = URL.createObjectURL(file);
-    logoList.push({ name: file.name, url: url }); // ロゴリストに追加
+logo_droparea.addEventListener("dragover", (event) => {
+  event.preventDefault();
+  logo_droparea.classList.add("highlight");
+});
 
-    // プレビューを作成
-    const previewItem = document.createElement("div");
-    previewItem.className = "preview-item";
-    previewItem.style.backgroundImage = `url(${url})`;
+logo_droparea.addEventListener("dragleave", () => {
+  logo_droparea.classList.remove("highlight");
+});
 
-    const fileName = document.createElement("div");
-    fileName.className = "file-name";
-    fileName.textContent = file.name;
+logo_droparea.addEventListener("drop", (event) => {
+  event.preventDefault();
+  logo_droparea.classList.remove("highlight");
 
-    previewItem.appendChild(fileName);
-    logoPreview.appendChild(previewItem);
-
-    // クリックでロゴを選択
-    previewItem.addEventListener("click", () => {
-      if (document.getElementById("deleteMode").checked) {
-        logoPreview.removeChild(previewItem);
-        logoList = logoList.filter((logo) => logo.url !== url); // ロゴリストから削除
-        sendToProjectionWindow();
-      } else {
-        VJ_DATA.logoFile = url;
-        sendToProjectionWindow();
-      }
-    });
-  });
-
-// ロゴ非表示ボタン
-function hideLogo() {
-  VJ_DATA.logoFile = null;
-  sendToProjectionWindow();
-}
-
-// effect2変更時の処理
-function handleEffect2Change() {
-  const effect2 = document.getElementById("effect2").value;
-  if (effect2 === "random") {
-    document.getElementById("randomBpmControl").style.display = "block";
-  } else {
-    document.getElementById("randomBpmControl").style.display = "none";
+  const files = event.dataTransfer.files;
+  if (files.length) {
+    logo_fileInput.files = files;
+    logo_fileInput.dispatchEvent(new Event("change"));
   }
+});
+
+logo_preview.addEventListener("click", () => {
+  logo_fileInput.click();
+});
+
+logo_fileInput.addEventListener("change", function (event) {
+  const file = event.target.files[0];
+  const url = URL.createObjectURL(file);
+
+  logo = url;
+  logo_preview.innerHTML = "";
+  const img = document.createElement("img");
+  img.src = url;
+  logo_preview.appendChild(img);
   sendToProjectionWindow();
-}
+});
 
 document.querySelector("#invertColor").addEventListener("change", (e) => {
   VJ_DATA.invertColor = e.target.checked;
   if (VJ_DATA.invertColor) {
-    document.getElementById("invertColorBpmControl").style.display = "block";
+    document.getElementById("invertColorWithBPM").parentElement.style.display =
+      "block";
   } else {
-    document.getElementById("invertColorBpmControl").style.display = "none";
+    document.getElementById("invertColorWithBPM").parentElement.style.display =
+      "none";
   }
   sendToProjectionWindow();
 });
@@ -133,7 +170,7 @@ document.getElementById("resetEffects").addEventListener("click", function () {
   VJ_DATA.logoFile = null;
   document.getElementById("text").value = null;
   document.getElementById("screenEffect").value = "none";
-  document.getElementById("effect2").value = "none";
+  document.getElementById("shuffle").checked = false;
   document.getElementById("randomBpmControl").style.display = "none";
   document.getElementById("aspectRatio").value = "16:9";
   sendToProjectionWindow();
@@ -146,10 +183,11 @@ function sendToProjectionWindow() {
     VJ_DATA.font = document.getElementById("font").value;
     VJ_DATA.randomBpm = parseFloat(document.getElementById("randomBpm").value);
     VJ_DATA.aspectRatio = document.getElementById("aspectRatio").value;
-    VJ_DATA.invertColorBPM =
-      document.getElementById("invertColorBpm").value || null;
-    VJ_DATA.effect2 = document.getElementById("effect2").value;
+    VJ_DATA.invertColorWithBPM =
+      document.getElementById("invertColorWithBPM").checked;
+    VJ_DATA.shuffle = document.getElementById("shuffle").checked;
     VJ_DATA.screenEffect = document.getElementById("screenEffect").value;
+    VJ_DATA.logo = document.getElementById("displayLogo").checked ? logo : null;
     projectionWindow.postMessage({ vjdesu: VJ_DATA }, PAGE_ORIGIN || "*");
   }
 }

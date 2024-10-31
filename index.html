@@ -8,125 +8,143 @@
     <script src="./script/common.js"></script>
   </head>
   <body>
-    <h1>VJ Settings</h1>
-
-    <!-- メディアファイルのアップロード -->
-    <div class="input-group">
-      <label for="media">Upload Media (GIF/PNG/JPG/mp4):</label>
+    <header>
+      <h1>VJ Settings</h1>
+      <div id="header_button">
+        <button id="openProjection">Open Projection Window</button>
+        <button id="resetEffects">Reset Effects</button>
+      </div>
+    </header>
+    <fieldset id="medias">
+      <legend>
+        Medias
+        <span class="shift" style="color: red">*Delete Mode</span>
+      </legend>
       <input
+        style="display: none"
         type="file"
         id="media"
         accept="image/gif, image/png, image/jpeg, video/mp4"
         multiple
       />
+
+      <div id="add-media" class="item add-item-btn">+</div>
+    </fieldset>
+    <div id="config">
+      <fieldset>
+        <legend>Center Text</legend>
+        <div class="inputs">
+          <div>
+            <span class="key">Text</span>
+            <input
+              class="val"
+              type="text"
+              id="text"
+              placeholder="Enter text to display"
+              oninput="sendToProjectionWindow()"
+            />
+          </div>
+          <div>
+            <span class="key">Font</span>
+            <select class="val" id="font" onchange="sendToProjectionWindow()">
+              <option value="Arial">Arial</option>
+              <option value="LoveLetter">LoveLetter</option>
+            </select>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Media Effect</legend>
+        <div class="inputs">
+          <div>
+            <span class="key">Effect</span>
+            <select
+              class="val"
+              id="screenEffect"
+              onchange="sendToProjectionWindow()"
+            >
+              <option value="none">None</option>
+              <option value="single">Single</option>
+              <option value="continuous">Tile</option>
+            </select>
+          </div>
+          <div>
+            <span class="key">Aspect</span>
+            <select
+              class="val"
+              id="aspectRatio"
+              onchange="sendToProjectionWindow()"
+            >
+              <option value="1:1">1:1</option>
+              <option value="4:3">4:3</option>
+              <option value="16:9">16:9</option>
+            </select>
+          </div>
+          <label>
+            <input type="checkbox" id="invertColor" />
+            Invert Color
+          </label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>BPM Sync Effect</legend>
+        <div class="inputs">
+          <div>
+            <span class="key">BPM</span>
+            <input
+              class="val"
+              type="number"
+              id="randomBpm"
+              value="120"
+              min="60"
+              max="300"
+              oninput="sendToProjectionWindow()"
+            />
+          </div>
+          <label for="shuffle">
+            <input
+              type="checkbox"
+              id="shuffle"
+              oninput="sendToProjectionWindow()"
+            />
+            Shuffle Media
+          </label>
+          <label style="display: none">
+            <input
+              type="checkbox"
+              id="invertColorWithBPM"
+              oninput="sendToProjectionWindow()"
+            />
+            Invert Color with BPM
+          </label>
+        </div>
+      </fieldset>
+
+      <fieldset id="logoDroparea">
+        <legend>Logo</legend>
+        <input
+          style="display: none"
+          type="file"
+          id="logo"
+          accept="image/gif, image/png, image/jpeg"
+        />
+        <div style="text-align: center">
+          <div id="logoPreview">
+            <div class="add-item-btn">+</div>
+          </div>
+        </div>
+        <label>
+          <input
+            type="checkbox"
+            id="displayLogo"
+            oninput="sendToProjectionWindow()"
+          />
+          Display Logo
+        </label>
+      </fieldset>
     </div>
-
-    <!-- メディアプレビュー -->
-    <h2>Media Preview</h2>
-    <div id="mediaPreview" class="preview-container"></div>
-
-    <!-- テキスト入力 -->
-    <div class="input-group">
-      <label for="text">Enter Text:</label>
-      <input
-        type="text"
-        id="text"
-        placeholder="Enter text to display"
-        oninput="sendToProjectionWindow()"
-      />
-    </div>
-
-    <!-- フォント選択 -->
-    <div class="input-group">
-      <label for="font">Select Font:</label>
-      <select id="font" onchange="sendToProjectionWindow()">
-        <option value="Arial">Arial</option>
-        <option value="LoveLetter">LoveLetter</option>
-      </select>
-    </div>
-
-    <!-- スクリーンエフェクト選択 -->
-    <div class="input-group">
-      <label for="screenEffect">Select Screen Effect:</label>
-      <select id="screenEffect" onchange="sendToProjectionWindow()">
-        <option value="none">None</option>
-        <option value="single">Single</option>
-        <option value="continuous">Tile</option>
-      </select>
-    </div>
-
-    <!-- アスペクト比選択 -->
-    <div class="input-group">
-      <label for="aspectRatio">Select Tile Aspect Ratio:</label>
-      <select id="aspectRatio" onchange="sendToProjectionWindow()">
-        <option value="1:1">1:1</option>
-        <option value="4:3">4:3</option>
-        <option value="16:9">16:9</option>
-      </select>
-    </div>
-
-    <!-- ランダムエフェクト選択 -->
-    <div class="input-group">
-      <label for="effect2">Select Random Effect:</label>
-      <select id="effect2" onchange="handleEffect2Change()">
-        <option value="none">None</option>
-        <option value="random">Random</option>
-      </select>
-    </div>
-
-    <!-- ランダムエフェクトのBPM設定 -->
-    <div class="input-group" id="randomBpmControl" style="display: none">
-      <label for="randomBpm">BPM for Random Effect:</label>
-      <input
-        type="number"
-        id="randomBpm"
-        value="120"
-        min="60"
-        max="300"
-        oninput="sendToProjectionWindow()"
-      />
-    </div>
-
-    <!-- 色反転モード -->
-    <label>
-      <input type="checkbox" id="invertColor" />
-      Invert Color
-    </label>
-
-    <!-- 色反転モードのBPM設定 -->
-    <div class="input-group" id="invertColorBpmControl" style="display: none">
-      <label for="invertColorBpm">BPM for Invert Color:</label>
-      <input
-        type="number"
-        id="invertColorBpm"
-        value=""
-        min="60"
-        max="300"
-        oninput="sendToProjectionWindow()"
-      />
-    </div>
-
-    <!-- ロゴのアップロード -->
-    <div class="input-group">
-      <label for="logoUpload">Upload Logo (GIF/PNG):</label>
-      <input type="file" id="logoUpload" accept="image/gif, image/png" />
-    </div>
-
-    <!-- ロゴプレビュー -->
-    <h2>Logo Preview</h2>
-    <div id="logoPreview" class="preview-container"></div>
-
-    <!-- ロゴ非表示ボタン -->
-    <button id="hideLogo" onclick="hideLogo()">Hide Logo</button>
-
-    <!-- 削除モード -->
-    <label> <input type="checkbox" id="deleteMode" /> Delete Mode </label>
-
-    <!-- プロジェクションウィンドウのオープンボタン -->
-    <button id="openProjection">Open Projection Window</button>
-
-    <!-- リセットボタン -->
-    <button id="resetEffects">Reset Effects</button>
 
     <script src="./script/index.js"></script>
   </body>

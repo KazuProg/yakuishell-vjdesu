@@ -9,12 +9,12 @@ const VJ_DATA = {
   mediaFile: null,
   text: "",
   font: "Arial",
-  logoFile: null, //unused?
+  logo: null,
   screenEffect: "none",
-  effect2: "none",
+  shuffle: false,
   mediaList: [],
   randomBpm: 120,
   aspectRatio: "16:9",
   invertColor: false,
-  invertColorBPM: null,
+  invertColorWithBPM: false,
 };

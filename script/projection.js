@@ -36,8 +36,8 @@ function applyEffect() {
   displayText.style.display = VJ_DATA.text ? "block" : "none"; // テキストがあれば表示
 
   // ロゴ表示
-  if (VJ_DATA.logoFile) {
-    logoElement.src = VJ_DATA.logoFile;
+  if (VJ_DATA.logo) {
+    logoElement.src = VJ_DATA.logo;
     logoElement.style.display = "block";
   } else {
     logoElement.style.display = "none";
@@ -79,7 +79,7 @@ function applyEffect() {
   }
 
   // ランダムエフェクトが選択されている場合
-  if (VJ_DATA.effect2 === "random") {
+  if (VJ_DATA.shuffle === true) {
     interval = setInterval(() => {
       Array.from(mediaContainer.children).forEach((tile) => {
         const randomMedia =
@@ -91,14 +91,14 @@ function applyEffect() {
     }, (60 / VJ_DATA.randomBpm) * 1000); // BPMに基づいてランダム切り替え
   }
 
-  if (VJ_DATA.invertColor && VJ_DATA.invertColorBPM) {
+  if (VJ_DATA.invertColor && VJ_DATA.invertColorWithBPM) {
     interval_invertColor = setInterval(() => {
       if (mediaContainer.classList.contains("invertColor")) {
         mediaContainer.classList.remove("invertColor");
       } else {
         mediaContainer.classList.add("invertColor");
       }
-    }, (60 / VJ_DATA.invertColorBPM) * 1000);
+    }, (60 / VJ_DATA.randomBpm) * 1000);
   }
 }
 
