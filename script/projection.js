@@ -82,11 +82,25 @@ function applyEffect() {
   if (VJ_DATA.shuffle === true) {
     interval = setInterval(() => {
       Array.from(mediaContainer.children).forEach((tile) => {
-        const randomMedia =
+        const randomMedia = () =>
           VJ_DATA.mediaList[
             Math.floor(Math.random() * VJ_DATA.mediaList.length)
           ];
-        tile.style.backgroundImage = `url(${randomMedia.url})`;
+        let mediaURL = null;
+        if (
+          VJ_DATA.screenEffect === "single" &&
+          VJ_DATA.mediaList.length >= 2
+        ) {
+          while (mediaURL == null) {
+            const media = randomMedia();
+            if (tile.style.backgroundImage.indexOf(media.url) === -1) {
+              mediaURL = media.url;
+            }
+          }
+        } else {
+          mediaURL = randomMedia().url;
+        }
+        tile.style.backgroundImage = `url(${mediaURL})`;
       });
     }, (60 / VJ_DATA.randomBpm) * 1000); // BPMに基づいてランダム切り替え
   }
