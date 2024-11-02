@@ -57,6 +57,10 @@ medias_fileInput.addEventListener("change", function (event) {
     const url = URL.createObjectURL(file);
     const media = { name: file.name, type: file.type.split("/")[0], url: url };
     VJ_DATA.mediaList.push(media); // メディアリストに追加
+    if (!VJ_DATA.mediaFile) {
+      VJ_DATA.mediaFile = media.url;
+      sendToProjectionWindow();
+    }
 
     // プレビューを作成（静止画として表示）
     const previewItem = document.createElement("div");
@@ -86,6 +90,13 @@ medias_fileInput.addEventListener("change", function (event) {
         VJ_DATA.mediaList = VJ_DATA.mediaList.filter(
           (media) => media.url !== url
         );
+        if (VJ_DATA.mediaFile === url) {
+          if (VJ_DATA.mediaList.length !== 0) {
+            VJ_DATA.mediaFile = VJ_DATA.mediaList[0].url;
+          } else {
+            VJ_DATA.mediaFile = null;
+          }
+        }
         sendToProjectionWindow();
       } else {
         VJ_DATA.mediaFile = media.url;
