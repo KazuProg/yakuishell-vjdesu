@@ -3,21 +3,20 @@ let logo = null;
 
 let isShiftPressed = false;
 
-document.addEventListener("keydown", (event) => {
-  isShiftPressed = event.shiftKey;
-  _switchShift();
+document.addEventListener("keydown", (e) => {
+  if (!isFormElement(e.target)) {
+    _shift(e.shiftKey);
+  }
 });
+document.addEventListener("keyup", () => _shift(false));
 
-document.addEventListener("keyup", (event) => {
-  isShiftPressed = false;
-  _switchShift();
-});
-
-function _switchShift() {
-  if (isShiftPressed && !document.body.classList.contains("shift")) {
+function _shift(state) {
+  isShiftPressed = state;
+  const ContainShift = document.body.classList.contains("shift");
+  if (isShiftPressed && !ContainShift) {
     document.body.classList.add("shift");
   }
-  if (!isShiftPressed && document.body.classList.contains("shift")) {
+  if (!isShiftPressed && ContainShift) {
     document.body.classList.remove("shift");
   }
 }
@@ -201,4 +200,17 @@ function sendToProjectionWindow() {
     VJ_DATA.logo = document.getElementById("displayLogo").checked ? logo : null;
     projectionWindow.postMessage({ vjdesu: VJ_DATA }, PAGE_ORIGIN || "*");
   }
+}
+
+/**
+ * Common Functions
+ */
+
+function isFormElement(element) {
+  return (
+    element instanceof HTMLInputElement ||
+    element instanceof HTMLTextAreaElement ||
+    element instanceof HTMLSelectElement ||
+    element instanceof HTMLButtonElement
+  );
 }

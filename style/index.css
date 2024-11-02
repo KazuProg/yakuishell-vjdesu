@@ -142,12 +142,3 @@ fieldset > .inputs > div > .val {
 .shift #medias {
   background-color: #f003;
 }
-
-body .shift {
-  position: absolute;
-  left: -9999px; /* 画面外に移動 */
-}
-
-body.shift .shift {
-  position: static;
-}
