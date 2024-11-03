@@ -172,15 +172,17 @@
         <div class="inputs">
           <div>
             <span class="key">BPM</span>
-            <input
-              class="val"
-              type="number"
-              id="randomBpm"
-              value="120"
-              min="60"
-              max="300"
-              oninput="sendToProjectionWindow()"
-            />
+            <div class="val grid-ls">
+              <input
+                type="number"
+                id="randomBpm"
+                value="120"
+                min="60"
+                max="300"
+                oninput="sendToProjectionWindow()"
+              />
+              <button id="measure-bpm" onclick="measureBPM()">M</button>
+            </div>
           </div>
           <label for="shuffle">
             <input

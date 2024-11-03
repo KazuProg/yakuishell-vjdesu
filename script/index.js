@@ -220,6 +220,37 @@ function sendToProjectionWindow() {
   }
 }
 
+let clickTimes = [];
+const MAX_CLICKS = 8;
+let measureBPM_timeout;
+function measureBPM() {
+  const now = Date.now();
+  clickTimes.push(now);
+
+  clearTimeout(measureBPM_timeout);
+
+  if (clickTimes.length > MAX_CLICKS) {
+    clickTimes.shift();
+  }
+
+  if (clickTimes.length > 1) {
+    const intervals = [];
+    for (let i = 1; i < clickTimes.length; i++) {
+      intervals.push(clickTimes[i] - clickTimes[i - 1]);
+    }
+
+    const avgInterval = intervals.reduce((a, b) => a + b) / intervals.length;
+    const bpm = Math.round(60000 / avgInterval);
+
+    measureBPM_timeout = setTimeout(() => {
+      clickTimes = [];
+    }, avgInterval * 2);
+
+    document.getElementById("randomBpm").value = bpm;
+    sendToProjectionWindow();
+  }
+}
+
 /**
  * Common Functions
  */

@@ -136,9 +136,22 @@ fieldset > .inputs > div > .val {
   max-height: 100%;
 }
 
+/* grid-large-small */
+.grid-ls {
+  display: grid;
+  grid-template-columns: 1fr auto;
+}
+
+button#measure-bpm {
+  margin: 1px;
+  margin-left: 3px;
+  background-color: #f94;
+}
+
 .hidden {
   display: none !important;
 }
+
 /**
  * Shift Mode
  */
