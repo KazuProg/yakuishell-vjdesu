@@ -33,6 +33,9 @@ function applyEffect() {
   // テキスト表示
   displayText.innerText = VJ_DATA.text || ""; // innerTextを設定
   displayText.style.fontFamily = VJ_DATA.font;
+  displayText.style.fontSize = `${VJ_DATA.fontSize}px`;
+  displayText.style.color = VJ_DATA.fontColor;
+  displayText.style.background = VJ_DATA.backColor + hex(VJ_DATA.backOpacity);
   displayText.style.display = VJ_DATA.text ? "block" : "none"; // テキストがあれば表示
 
   // ロゴ表示

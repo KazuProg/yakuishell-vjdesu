@@ -8,7 +8,11 @@ const PAGE_ORIGIN =
 const VJ_DATA = {
   mediaFile: null,
   text: "",
-  font: "Arial",
+  font: "sans-serif",
+  fontSize: 24,
+  fontColor: "#ffffff",
+  backColor: "#000000",
+  backOpacity: 0,
   logo: null,
   screenEffect: "none",
   shuffle: false,
@@ -18,3 +22,10 @@ const VJ_DATA = {
   invertColor: false,
   invertColorWithBPM: false,
 };
+
+/**
+ * Common functions
+ */
+function hex(val, len = 2) {
+  return val.toString(16).toUpperCase().padStart(len, "0");
+}

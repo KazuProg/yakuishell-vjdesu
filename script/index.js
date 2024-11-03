@@ -191,6 +191,10 @@ function sendToProjectionWindow() {
   if (projectionWindow && !projectionWindow.closed) {
     VJ_DATA.text = document.getElementById("text").value;
     VJ_DATA.font = document.getElementById("font").value;
+    VJ_DATA.fontSize = document.getElementById("font-size").value;
+    VJ_DATA.fontColor = document.getElementById("font-color").value;
+    VJ_DATA.backColor = document.getElementById("back-color").value;
+    VJ_DATA.backOpacity = +document.getElementById("back-opacity").value;
     VJ_DATA.randomBpm = parseFloat(document.getElementById("randomBpm").value);
     VJ_DATA.aspectRatio = document.getElementById("aspectRatio").value;
     VJ_DATA.invertColorWithBPM =

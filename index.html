@@ -43,10 +43,59 @@
           </div>
           <div>
             <span class="key">Font</span>
-            <select class="val" id="font" onchange="sendToProjectionWindow()">
-              <option value="Arial">Arial</option>
-              <option value="LoveLetter">LoveLetter</option>
-            </select>
+            <input
+              class="val"
+              id="font"
+              type="text"
+              value="sans-serif"
+              list="font_list"
+              oninput="sendToProjectionWindow()"
+            />
+            <datalist id="font_list">
+              <option value="serif"></option>
+              <option value="sans-serif"></option>
+              <option value="cursive"></option>
+              <option value="fantasy"></option>
+              <option value="monospace"></option>
+            </datalist>
+          </div>
+          <div>
+            <span class="key">Size</span>
+            <input
+              class="val"
+              id="font-size"
+              type="number"
+              value="24"
+              oninput="sendToProjectionWindow()"
+            />
+          </div>
+          <div>
+            <span class="key">TextColor</span>
+            <input
+              class="val"
+              id="font-color"
+              type="color"
+              value="#ffffff"
+              oninput="sendToProjectionWindow()"
+            />
+          </div>
+          <div>
+            <span class="key">BackColor</span>
+            <div class="val">
+              <input
+                id="back-color"
+                type="color"
+                oninput="sendToProjectionWindow()"
+              />
+              <input
+                id="back-opacity"
+                type="range"
+                min="0"
+                max="255"
+                value="0"
+                oninput="sendToProjectionWindow()"
+              />
+            </div>
           </div>
         </div>
       </fieldset>
