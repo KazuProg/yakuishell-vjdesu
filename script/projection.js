@@ -30,6 +30,8 @@ function applyEffect() {
   clearInterval(interval); // 既存のランダム切り替えタイマーをクリア
   clearInterval(interval_invertColor);
 
+  document.body.style.backgroundColor = VJ_DATA.backgroundColor;
+
   // テキスト表示
   displayText.innerText = VJ_DATA.text || ""; // innerTextを設定
   displayText.style.fontFamily = VJ_DATA.font;
@@ -73,11 +75,11 @@ function applyEffect() {
       aspectHeight = "0.5625"; // 16:9 の比率
     }
 
-    for (let i = 0; i < 36; i++) {
+    for (let i = 0; i < VJ_DATA.tileCount ** 2; i++) {
       // 6x6のタイル配置
       const tile = createMediaElem(VJ_DATA.mediaFile);
-      tile.style.width = "calc(100vw / 6)";
-      tile.style.height = `calc(100vw / 6 * ${aspectHeight})`;
+      tile.style.width = `calc(100vw / ${VJ_DATA.tileCount})`;
+      tile.style.height = `calc(100vw / ${VJ_DATA.tileCount} * ${aspectHeight})`;
       mediaContainer.appendChild(tile);
     }
   } else if (VJ_DATA.screenEffect === "single") {
@@ -137,8 +139,9 @@ function createMediaElem(url) {
   if (mediaType === "image") {
     mediaElem = document.createElement("div");
     mediaElem.style.backgroundImage = `url(${url})`;
-    mediaElem.style.backgroundSize = "cover";
+    mediaElem.style.backgroundSize = VJ_DATA.mediaDisplay;
     mediaElem.style.backgroundPosition = "center";
+    mediaElem.style.backgroundRepeat = "no-repeat";
   }
   if (mediaType === "video") {
     mediaElem = document.createElement("video");
@@ -147,7 +150,7 @@ function createMediaElem(url) {
     mediaElem.autoplay = true;
     mediaElem.controls = false;
     mediaElem.loop = true;
+    mediaElem.style.objectFit = VJ_DATA.mediaDisplay;
   }
-  mediaElem.style.objectFit = "cover";
   return mediaElem;
 }

@@ -104,6 +104,16 @@
         <legend>Media Effect</legend>
         <div class="inputs">
           <div>
+            <span class="key">BG Color</span>
+            <input
+              class="val"
+              id="background-color"
+              type="color"
+              value="#000000"
+              oninput="sendToProjectionWindow()"
+            />
+          </div>
+          <div>
             <span class="key">Effect</span>
             <select
               class="val"
@@ -116,6 +126,29 @@
             </select>
           </div>
           <div>
+            <span class="key">Display</span>
+            <select
+              class="val"
+              id="media-display"
+              onchange="sendToProjectionWindow()"
+            >
+              <option value="cover">Cover</option>
+              <option value="contain">Contain</option>
+            </select>
+          </div>
+          <div class="media-effect-tile hidden">
+            <span class="key">Tile Count</span>
+            <input
+              class="val"
+              id="tile-count"
+              type="number"
+              min="2"
+              max="6"
+              value="6"
+              oninput="sendToProjectionWindow()"
+            />
+          </div>
+          <div class="media-effect-tile hidden">
             <span class="key">Aspect</span>
             <select
               class="val"

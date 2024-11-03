@@ -197,6 +197,9 @@ function sendToProjectionWindow() {
     VJ_DATA.backOpacity = +document.getElementById("back-opacity").value;
     VJ_DATA.randomBpm = parseFloat(document.getElementById("randomBpm").value);
     VJ_DATA.aspectRatio = document.getElementById("aspectRatio").value;
+    VJ_DATA.tileCount = +document.getElementById("tile-count").value;
+    VJ_DATA.mediaDisplay = document.getElementById("media-display").value;
+    VJ_DATA.backgroundColor = document.getElementById("background-color").value;
     VJ_DATA.invertColorWithBPM =
       document.getElementById("invertColorWithBPM").checked;
     VJ_DATA.shuffle = document.getElementById("shuffle").checked;
@@ -206,6 +209,12 @@ function sendToProjectionWindow() {
     VJ_DATA.logoPosX = document.getElementById("logo-pos-x").value;
     VJ_DATA.logoPosY = document.getElementById("logo-pos-y").value;
     VJ_DATA.logoOpacity = document.getElementById("logo-opacity").value;
+    const tileSettings = document.querySelectorAll(".media-effect-tile");
+    if (VJ_DATA.screenEffect === "continuous") {
+      tileSettings.forEach((e) => e.classList.remove("hidden"));
+    } else {
+      tileSettings.forEach((e) => e.classList.add("hidden"));
+    }
     projectionWindow.postMessage({ vjdesu: VJ_DATA }, PAGE_ORIGIN || "*");
   }
 }

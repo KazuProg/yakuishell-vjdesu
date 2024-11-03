@@ -21,8 +21,11 @@ const VJ_DATA = {
   screenEffect: "none",
   shuffle: false,
   mediaList: [],
+  mediaDisplay: "cover",
   randomBpm: 120,
   aspectRatio: "16:9",
+  tileCount: 6,
+  backgroundColor: "#000000",
   invertColor: false,
   invertColorWithBPM: false,
 };
