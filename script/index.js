@@ -202,6 +202,10 @@ function sendToProjectionWindow() {
     VJ_DATA.shuffle = document.getElementById("shuffle").checked;
     VJ_DATA.screenEffect = document.getElementById("screenEffect").value;
     VJ_DATA.logo = document.getElementById("displayLogo").checked ? logo : null;
+    VJ_DATA.logoSize = document.getElementById("logo-size").value;
+    VJ_DATA.logoPosX = document.getElementById("logo-pos-x").value;
+    VJ_DATA.logoPosY = document.getElementById("logo-pos-y").value;
+    VJ_DATA.logoOpacity = document.getElementById("logo-opacity").value;
     projectionWindow.postMessage({ vjdesu: VJ_DATA }, PAGE_ORIGIN || "*");
   }
 }

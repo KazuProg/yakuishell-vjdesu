@@ -41,6 +41,18 @@ function applyEffect() {
   // ロゴ表示
   if (VJ_DATA.logo) {
     logoElement.src = VJ_DATA.logo;
+    logoElement.addEventListener("load", (e) => {
+      logoElement.style.width = `${window.innerWidth * VJ_DATA.logoSize}px`;
+      const w = logoElement.clientWidth;
+      const h = logoElement.clientHeight;
+      logoElement.style.left = `${
+        (window.innerWidth - w) * VJ_DATA.logoPosX
+      }px`;
+      logoElement.style.top = `${
+        (window.innerHeight - h) * VJ_DATA.logoPosY
+      }px`;
+    });
+    logoElement.style.opacity = VJ_DATA.logoOpacity;
     logoElement.style.display = "block";
   } else {
     logoElement.style.display = "none";

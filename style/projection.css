@@ -11,12 +11,6 @@ body {
 #logoElement {
   display: none; /* 初期状態で非表示 */
   position: absolute;
-  top: 75vh; /* ロゴを下に配置 */
-  left: 50vw;
-  transform: translate(-50%, -50%); /* 中央配置 */
-  z-index: 10; /* 他の要素の上に表示 */
-  width: 20%; /* ロゴの幅を20%に設定 */
-  height: auto; /* 高さは自動調整 */
 }
 
 #displayText {
