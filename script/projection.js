@@ -131,6 +131,18 @@ function applyEffect() {
       }
     }, (60 / VJ_DATA.randomBpm) * 1000);
   }
+
+  if (VJ_DATA.flash) {
+    interval_invertColor = setInterval(() => {
+      const flashElement = document.querySelector("#flash");
+      flashElement.classList.remove("flash");
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          flashElement.classList.add("flash");
+        });
+      });
+    }, (60 / VJ_DATA.randomBpm) * 1000);
+  }
 }
 
 function createMediaElem(url) {

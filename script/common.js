@@ -20,6 +20,7 @@ const VJ_DATA = {
   logoOpacity: 1,
   screenEffect: "none",
   shuffle: false,
+  flash: false,
   mediaList: [],
   mediaDisplay: "cover",
   randomBpm: 120,

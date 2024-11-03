@@ -45,3 +45,20 @@ body {
 .invertColor {
   filter: invert(100%);
 }
+
+#flash {
+  position: fixed;
+  inset: 0;
+}
+
+.flash {
+  animation: flash 0.3s ease-out;
+}
+@keyframes flash {
+  0% {
+    background-color: white;
+  }
+  100% {
+    background-color: transparent;
+  }
+}
