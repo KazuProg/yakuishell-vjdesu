@@ -210,11 +210,27 @@ function sendToProjectionWindow() {
     VJ_DATA.logoPosX = document.getElementById("logo-pos-x").value;
     VJ_DATA.logoPosY = document.getElementById("logo-pos-y").value;
     VJ_DATA.logoOpacity = document.getElementById("logo-opacity").value;
+    VJ_DATA.logoRandomPos = document.querySelector(
+      "#logo-random-position"
+    ).checked;
+    VJ_DATA.logoRandomFreq = document.querySelector("#logo-random-freq").value;
+    VJ_DATA.logoRandomCount =
+      document.querySelector("#logo-random-count").value;
+
     const tileSettings = document.querySelectorAll(".media-effect-tile");
     if (VJ_DATA.screenEffect === "continuous") {
       tileSettings.forEach((e) => e.classList.remove("hidden"));
     } else {
       tileSettings.forEach((e) => e.classList.add("hidden"));
+    }
+    const logoFixedPos = document.querySelectorAll(".logo-fixed-position");
+    const logoRandomPos = document.querySelectorAll(".logo-random-position");
+    if (VJ_DATA.logoRandomPos) {
+      logoFixedPos.forEach((e) => e.classList.add("hidden"));
+      logoRandomPos.forEach((e) => e.classList.remove("hidden"));
+    } else {
+      logoRandomPos.forEach((e) => e.classList.add("hidden"));
+      logoFixedPos.forEach((e) => e.classList.remove("hidden"));
     }
     projectionWindow.postMessage({ vjdesu: VJ_DATA }, PAGE_ORIGIN || "*");
   }

@@ -1,5 +1,6 @@
 let interval = null; // ランダム切り替え用のタイマー
 let interval_invertColor = null;
+let interval_randomLogo = null;
 
 // 受信データの処理
 window.addEventListener("message", function (event) {
@@ -23,12 +24,13 @@ window.addEventListener("message", function (event) {
 });
 
 function applyEffect() {
-  const logoElement = document.getElementById("logoElement");
+  const logoLayer = document.querySelector("#logo-layer");
   const mediaContainer = document.getElementById("media");
   const displayText = document.getElementById("displayText");
 
   clearInterval(interval); // 既存のランダム切り替えタイマーをクリア
   clearInterval(interval_invertColor);
+  clearInterval(interval_randomLogo);
 
   document.body.style.backgroundColor = VJ_DATA.backgroundColor;
 
@@ -41,23 +43,36 @@ function applyEffect() {
   displayText.style.display = VJ_DATA.text ? "block" : "none"; // テキストがあれば表示
 
   // ロゴ表示
+  logoLayer.innerHTML = "";
   if (VJ_DATA.logo) {
-    logoElement.src = VJ_DATA.logo;
-    logoElement.addEventListener("load", (e) => {
-      logoElement.style.width = `${window.innerWidth * VJ_DATA.logoSize}px`;
-      const w = logoElement.clientWidth;
-      const h = logoElement.clientHeight;
-      logoElement.style.left = `${
-        (window.innerWidth - w) * VJ_DATA.logoPosX
-      }px`;
-      logoElement.style.top = `${
-        (window.innerHeight - h) * VJ_DATA.logoPosY
-      }px`;
-    });
-    logoElement.style.opacity = VJ_DATA.logoOpacity;
-    logoElement.style.display = "block";
-  } else {
-    logoElement.style.display = "none";
+    logoLayer.style.opacity = VJ_DATA.logoOpacity;
+    const createLogoElem = (x, y) => {
+      const logoElement = document.createElement("img");
+      logoElement.style.position = "absolute";
+      logoElement.style.display = "none";
+      logoElement.src = VJ_DATA.logo;
+      logoElement.addEventListener("load", (e) => {
+        logoElement.style.display = "block";
+        logoElement.style.width = `${window.innerWidth * VJ_DATA.logoSize}px`;
+        const w = logoElement.clientWidth;
+        const h = logoElement.clientHeight;
+        logoElement.style.left = `${(window.innerWidth - w) * x}px`;
+        logoElement.style.top = `${(window.innerHeight - h) * y}px`;
+      });
+      return logoElement;
+    };
+    if (VJ_DATA.logoRandomPos) {
+      interval_randomLogo = setInterval(() => {
+        const logoElement = createLogoElem(Math.random(), Math.random());
+        logoLayer.appendChild(logoElement);
+        if (VJ_DATA.logoRandomCount < logoLayer.children.length) {
+          logoLayer.removeChild(logoLayer.children[0]);
+        }
+      }, VJ_DATA.logoRandomFreq * 1000);
+    } else {
+      const logoElement = createLogoElem(VJ_DATA.logoPosX, VJ_DATA.logoPosY);
+      logoLayer.appendChild(logoElement);
+    }
   }
 
   mediaContainer.classList.remove("tile");

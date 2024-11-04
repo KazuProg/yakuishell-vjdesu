@@ -8,6 +8,11 @@ body {
   position: relative; /* 子要素を絶対位置にするため */
 }
 
+#logo-layer {
+  position: fixed;
+  inset: 0;
+}
+
 #logoElement {
   display: none; /* 初期状態で非表示 */
   position: absolute;
