@@ -203,6 +203,7 @@ function sendToProjectionWindow() {
     VJ_DATA.invertColorWithBPM =
       document.getElementById("invertColorWithBPM").checked;
     VJ_DATA.shuffle = document.getElementById("shuffle").checked;
+    VJ_DATA.bpmTileAnimation = document.getElementById("bpmTileAnimation").checked;
     VJ_DATA.flash = document.getElementById("flash").checked;
     VJ_DATA.screenEffect = document.getElementById("screenEffect").value;
     VJ_DATA.logo = document.getElementById("displayLogo").checked ? logo : null;

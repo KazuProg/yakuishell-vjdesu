@@ -1,6 +1,9 @@
 let interval = null; // ランダム切り替え用のタイマー
 let interval_invertColor = null;
 let interval_randomLogo = null;
+let bpmTileInterval = null;
+let tileCountArray = [1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1];
+let currentTileIndex = 0;
 
 // 受信データの処理
 window.addEventListener("message", function (event) {
@@ -158,6 +161,23 @@ function applyEffect() {
       });
     }, (60 / VJ_DATA.randomBpm) * 1000);
   }
+
+  clearInterval(bpmTileInterval);
+  
+  if (VJ_DATA.bpmTileAnimation) {
+    bpmTileInterval = setInterval(() => {
+      VJ_DATA.tileCount = tileCountArray[currentTileIndex];
+      currentTileIndex = (currentTileIndex + 1) % tileCountArray.length;
+      updateTilesWithBounce(); // バウンスをかけながらタイルを更新
+    }, (60 / VJ_DATA.randomBpm) * 1000);
+  }
+}
+
+function updateTilesWithBounce() {
+  const mediaContainer = document.getElementById("media");
+  mediaContainer.classList.add("bounce");
+  setTimeout(() => mediaContainer.classList.remove("bounce"), 300); // バウンスの適用
+  applyEffect(); // エフェクトを再適用
 }
 
 function createMediaElem(url) {
