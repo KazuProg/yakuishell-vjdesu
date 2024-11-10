@@ -1,4 +1,34 @@
-/* 設定画面用のスタイル */
+/**
+ * Common Styles
+ */
+input[type="file"],
+input[type="text"],
+input[type="number"],
+select {
+  width: 100%;
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+button {
+  padding: 4px 15px;
+  background-color: #ccc;
+  color: black;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #aaa;
+}
+
+.highlight {
+  background: white;
+}
+
 body {
   font-family: Arial, sans-serif;
   margin: 20px;
@@ -7,35 +37,21 @@ body {
   user-select: none;
 }
 
-input[type="file"],
-input[type="text"],
-input[type="number"],
-select {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
+header .buttons {
+  position: absolute;
+  top: 20px;
+  right: 10px;
 }
 
-button {
+header .buttons button {
   padding: 10px 15px;
   margin-right: 10px;
   background-color: #5cb85c;
   color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
 }
 
-button:hover {
+header .buttons button:hover {
   background-color: #4cae4c;
-}
-
-#header_button {
-  position: absolute;
-  top: 20px;
-  right: 10px;
 }
 
 #medias {
@@ -44,11 +60,6 @@ button:hover {
   gap: 10px;
   margin-top: 10px;
   margin-bottom: 1rem;
-}
-
-#medias.highlight,
-#logoDroparea.highlight {
-  background: white;
 }
 
 #medias > .item {
@@ -103,13 +114,13 @@ fieldset > legend {
 
 fieldset > .inputs {
   display: flex;
-  flex-direction: column; /* 縦方向に配置 */
-  gap: 10px; /* 要素間のスペース */
+  flex-direction: column;
+  gap: 10px;
 }
 
 fieldset > .inputs > div {
   display: flex;
-  flex-direction: row; /* 縦方向に配置 */
+  flex-direction: row;
   align-items: center;
 }
 
@@ -121,18 +132,18 @@ fieldset > .inputs > div > .val {
   flex: 0 0 70%;
 }
 
-#logoPreview {
+#logo-preview {
   margin: auto;
   height: 100px;
   display: inline-block;
   cursor: pointer;
 }
-#logoPreview > div {
+#logo-preview > div {
   width: 100px;
   height: 100px;
 }
 
-#logoPreview > img {
+#logo-preview > img {
   max-height: 100%;
 }
 

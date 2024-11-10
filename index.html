@@ -2,56 +2,36 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>settings</title>
+    <title>VJdesu Settings</title>
     <link rel="stylesheet" href="./style/index.css" />
-    <script src="./script/common.js"></script>
+    <script type="module" src="./script/index.js"></script>
   </head>
   <body>
     <header>
-      <h1>VJ Settings</h1>
-      <div id="header_button">
-        <button id="openProjection">Open Projection Window</button>
-        <button id="resetEffects">Reset Effects</button>
+      <h1>VJdesu Settings</h1>
+      <div class="buttons">
+        <button id="open-projection">Open Projection Window</button>
       </div>
     </header>
+
     <fieldset id="medias">
       <legend>Medias (Press Shift to Delete Mode)</legend>
-      <input
-        style="display: none"
-        type="file"
-        id="media"
-        accept="image/gif, image/png, image/jpeg, video/mp4"
-        multiple
-      />
-
+      <input type="file" class="hidden" accept="image/*,video/*" multiple />
       <div id="add-media" class="item add-item-btn">+</div>
     </fieldset>
+
     <div id="config">
       <fieldset>
         <legend>Center Text</legend>
         <div class="inputs">
           <div>
             <span class="key">Text</span>
-            <input
-              class="val"
-              type="text"
-              id="text"
-              placeholder="Enter text to display"
-              oninput="sendToProjectionWindow()"
-            />
+            <input class="val" type="text" id="text" />
           </div>
           <div>
             <span class="key">Font</span>
-            <input
-              class="val"
-              id="font"
-              type="text"
-              value="sans-serif"
-              list="font_list"
-              oninput="sendToProjectionWindow()"
-            />
-            <datalist id="font_list">
+            <input class="val" id="font" type="text" list="font-list" />
+            <datalist id="font-list">
               <option value="serif"></option>
               <option value="sans-serif"></option>
               <option value="cursive"></option>
@@ -61,40 +41,17 @@
           </div>
           <div>
             <span class="key">Size</span>
-            <input
-              class="val"
-              id="font-size"
-              type="number"
-              value="24"
-              oninput="sendToProjectionWindow()"
-            />
+            <input class="val" id="font-size" type="number" />
           </div>
           <div>
             <span class="key">TextColor</span>
-            <input
-              class="val"
-              id="font-color"
-              type="color"
-              value="#ffffff"
-              oninput="sendToProjectionWindow()"
-            />
+            <input class="val" id="text-color" type="color" />
           </div>
           <div>
             <span class="key">BackColor</span>
             <div class="val">
-              <input
-                id="back-color"
-                type="color"
-                oninput="sendToProjectionWindow()"
-              />
-              <input
-                id="back-opacity"
-                type="range"
-                min="0"
-                max="255"
-                value="0"
-                oninput="sendToProjectionWindow()"
-              />
+              <input id="back-color" type="color" />
+              <input id="back-opacity" type="range" min="0" max="255" />
             </div>
           </div>
         </div>
@@ -105,142 +62,71 @@
         <div class="inputs">
           <div>
             <span class="key">BG Color</span>
-            <input
-              class="val"
-              id="background-color"
-              type="color"
-              value="#000000"
-              oninput="sendToProjectionWindow()"
-            />
+            <input class="val" id="bg-color" type="color" />
           </div>
           <div>
-            <span class="key">Effect</span>
-            <select
-              class="val"
-              id="screenEffect"
-              onchange="sendToProjectionWindow()"
-            >
+            <span class="key">Type</span>
+            <select class="val" id="media-effect">
               <option value="none">None</option>
               <option value="single">Single</option>
-              <option value="continuous">Tile</option>
+              <option value="tile">Tile</option>
             </select>
           </div>
-          <div>
+          <div class="media-effect-option hidden">
             <span class="key">Display</span>
-            <select
-              class="val"
-              id="media-display"
-              onchange="sendToProjectionWindow()"
-            >
+            <select class="val" id="media-display">
               <option value="cover">Cover</option>
               <option value="contain">Contain</option>
             </select>
           </div>
-          <div class="media-effect-tile hidden">
+          <div class="media-effect-tile-option hidden">
             <span class="key">Tile Count</span>
-            <input
-              class="val"
-              id="tile-count"
-              type="number"
-              min="2"
-              max="6"
-              value="6"
-              oninput="sendToProjectionWindow()"
-            />
+            <input class="val" id="tile-count" type="number" />
           </div>
-          <div class="media-effect-tile hidden">
+          <div class="media-effect-tile-option hidden">
             <span class="key">Aspect</span>
-            <select
-              class="val"
-              id="aspectRatio"
-              onchange="sendToProjectionWindow()"
-            >
+            <select class="val" id="aspect-ratio">
               <option value="1:1">1:1</option>
               <option value="4:3">4:3</option>
               <option value="16:9">16:9</option>
             </select>
           </div>
-          <label>
-            <input type="checkbox" id="invertColor" />
+          <label class="media-effect-option hidden">
+            <input type="checkbox" id="invert-color" />
             Invert Color
           </label>
         </div>
       </fieldset>
 
       <fieldset>
-        <legend>BPM Sync Effect</legend>
+        <legend>Beat Effect</legend>
         <div class="inputs">
           <div>
             <span class="key">BPM</span>
             <div class="val grid-ls">
-              <input
-                type="number"
-                id="randomBpm"
-                value="120"
-                min="60"
-                max="300"
-                oninput="sendToProjectionWindow()"
-              />
-              <button id="measure-bpm" onclick="measureBPM()">M</button>
+              <input type="number" id="bpm" />
+              <button id="measure-bpm">M</button>
             </div>
           </div>
-          <label for="shuffle">
-            <input
-              type="checkbox"
-              id="shuffle"
-              oninput="sendToProjectionWindow()"
-            />
-            Shuffle Media
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              id="bpmTileAnimation"
-              onchange="sendToProjectionWindow()"
-            />
-            Tile Animation
-          </label>
-          <label for="flash">
-            <input
-              type="checkbox"
-              id="flash"
-              oninput="sendToProjectionWindow()"
-            />
-            flash
-          </label>
+          <label><input type="checkbox" id="beat-shuffle" />Shuffle</label>
+          <label><input type="checkbox" id="beat-bounce" />Bounce</label>
+          <label><input type="checkbox" id="beat-flash" />Flash</label>
           <label style="display: none">
-            <input
-              type="checkbox"
-              id="invertColorWithBPM"
-              oninput="sendToProjectionWindow()"
-            />
-            Invert Color with BPM
+            <input type="checkbox" id="beat-invert-color" />Invert Color
           </label>
         </div>
       </fieldset>
 
-      <fieldset id="logoDroparea">
+      <fieldset id="logo">
         <legend>Logo</legend>
-        <input
-          style="display: none"
-          type="file"
-          id="logo"
-          accept="image/gif, image/png, image/jpeg"
-        />
-        <div style="text-align: center">
-          <div id="logoPreview">
+        <input type="file" class="hidden" accept="image/*" />
+        <div style="text-align: center; margin-bottom: 10px">
+          <div id="logo-preview">
             <div class="add-item-btn">+</div>
           </div>
         </div>
         <div class="inputs">
-          <label>
-            <input
-              type="checkbox"
-              id="displayLogo"
-              oninput="sendToProjectionWindow()"
-            />
-            Display Logo
-          </label>
+          <label><input type="checkbox" id="display-logo" />Display Logo</label>
           <div>
             <span class="key">Size</span>
             <input
@@ -250,8 +136,6 @@
               min="0.1"
               max="1"
               step="0.01"
-              value="0.3"
-              oninput="sendToProjectionWindow()"
             />
           </div>
           <div>
@@ -263,16 +147,10 @@
               min="0"
               max="1"
               step="0.01"
-              value="1"
-              oninput="sendToProjectionWindow()"
             />
           </div>
           <label>
-            <input
-              type="checkbox"
-              id="logo-random-position"
-              oninput="sendToProjectionWindow()"
-            />
+            <input type="checkbox" id="logo-random-position" />
             Random Position
           </label>
           <div class="logo-fixed-position">
@@ -284,8 +162,6 @@
               min="0"
               max="1"
               step="0.01"
-              value="0.5"
-              oninput="sendToProjectionWindow()"
             />
           </div>
           <div class="logo-fixed-position">
@@ -297,8 +173,6 @@
               min="0"
               max="1"
               step="0.01"
-              value="0.7"
-              oninput="sendToProjectionWindow()"
             />
           </div>
           <div class="logo-random-position hidden">
@@ -310,8 +184,6 @@
               min="0.1"
               max="5"
               step="0.1"
-              value="0.5"
-              oninput="sendToProjectionWindow()"
             />
           </div>
           <div class="logo-random-position hidden">
@@ -323,14 +195,10 @@
               min="1"
               max="20"
               step="1"
-              value="1"
-              oninput="sendToProjectionWindow()"
             />
           </div>
         </div>
       </fieldset>
     </div>
-
-    <script src="./script/index.js"></script>
   </body>
 </html>

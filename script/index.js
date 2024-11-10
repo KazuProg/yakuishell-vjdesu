@@ -1,75 +1,231 @@
-let projectionWindow;
-let logo = null;
+import VJ_DATA from "./Settings.js";
+import MediaManager from "./MediaManager.js";
+import ShiftKeyListener from "./ShiftKeyListener.js";
+import BPMCounter from "./BPMCounter.js";
 
-let isShiftPressed = false;
-
-document.addEventListener("keydown", (e) => {
-  if (!isFormElement(e.target)) {
-    _shift(e.shiftKey);
-  }
+const mediaManager = new MediaManager(VJ_DATA, () => {
+  sendToProjectionWindow();
 });
-document.addEventListener("keyup", () => _shift(false));
 
-function _shift(state) {
-  isShiftPressed = state;
-  const ContainShift = document.body.classList.contains("shift");
-  if (isShiftPressed && !ContainShift) {
+const shiftListener = new ShiftKeyListener(
+  () => {
     document.body.classList.add("shift");
-  }
-  if (!isShiftPressed && ContainShift) {
+  },
+  () => {
     document.body.classList.remove("shift");
   }
+);
+
+const bpmcounter = new BPMCounter((bpm) => {
+  bpm = parseFloat(bpm.toFixed(1));
+  document.getElementById("bpm").value = bpm;
+  VJ_DATA.beatEffect.bpm = bpm;
+  sendToProjectionWindow();
+});
+
+let projectionWindow;
+
+window.addEventListener("load", () => {
+  initEventListeners();
+  openProjectionWindow();
+});
+
+function initEventListeners() {
+  document.querySelector("#open-projection").addEventListener("click", () => {
+    openProjectionWindow();
+  });
+
+  // Medias
+  const medias = document.querySelector("#medias");
+  const mediasInput = medias.querySelector("input[type=file]");
+
+  medias.addEventListener("dragover", (event) => {
+    event.preventDefault();
+    medias.classList.add("highlight");
+  });
+
+  medias.addEventListener("dragleave", () => {
+    medias.classList.remove("highlight");
+  });
+
+  medias.addEventListener("drop", (event) => {
+    event.preventDefault();
+    medias.classList.remove("highlight");
+
+    loadMedias(event.dataTransfer.files);
+  });
+
+  mediasInput.addEventListener("change", (event) => {
+    loadMedias(event.target.files);
+  });
+
+  document.querySelector("#add-media").addEventListener("click", () => {
+    mediasInput.click();
+  });
+
+  // Center Text
+  initInput("#text", VJ_DATA.centerText, "text", (e) => {
+    return e.target.value;
+  });
+  addAutoCompleteBehavior("#font");
+  initInput("#font", VJ_DATA.centerText, "font", (e) => {
+    return e.target.value;
+  });
+  initInput("#font-size", VJ_DATA.centerText, "fontSize", (e) => {
+    return parseInt(e.target.value);
+  });
+  initInput("#text-color", VJ_DATA.centerText, "textColor", (e) => {
+    return e.target.value;
+  });
+  initInput("#back-color", VJ_DATA.centerText, "backColor", (e) => {
+    return e.target.value;
+  });
+  initInput("#back-opacity", VJ_DATA.centerText, "backOpacity", (e) => {
+    return parseInt(e.target.value);
+  });
+
+  // Media Effect
+  initInput("#bg-color", VJ_DATA.mediaEffect, "bgColor", (e) => {
+    return e.target.value;
+  });
+  initInput("#media-effect", VJ_DATA.mediaEffect, "type", (e) => {
+    const type = e.target.value;
+    const settings = document.querySelectorAll(".media-effect-option");
+    const tileSettings = document.querySelectorAll(".media-effect-tile-option");
+    if (type === "none") {
+      settings.forEach((e) => e.classList.add("hidden"));
+      tileSettings.forEach((e) => e.classList.add("hidden"));
+    } else {
+      settings.forEach((e) => e.classList.remove("hidden"));
+      if (type === "tile") {
+        tileSettings.forEach((e) => e.classList.remove("hidden"));
+      } else {
+        tileSettings.forEach((e) => e.classList.add("hidden"));
+      }
+    }
+    return type;
+  });
+  initInput("#media-display", VJ_DATA.mediaEffect, "mediaDisplay", (e) => {
+    return e.target.value;
+  });
+  initInput("#tile-count", VJ_DATA.mediaEffect, "tileCount", (e) => {
+    return Math.max(2, Math.min(6, parseInt(e.target.value)));
+  });
+  initInput("#aspect-ratio", VJ_DATA.mediaEffect, "aspectRatio", (e) => {
+    return e.target.value;
+  });
+  initInput("#invert-color", VJ_DATA.mediaEffect, "invertColor", (e) => {
+    const value = e.target.checked;
+    const target = document.getElementById("beat-invert-color").parentElement;
+    if (value) {
+      target.style.display = "block";
+    } else {
+      target.style.display = "none";
+    }
+    return value;
+  });
+
+  // Beat Effect
+  initInput("#bpm", VJ_DATA.beatEffect, "bpm", (e) => {
+    return parseFloat(e.target.value);
+  });
+  document.querySelector("#measure-bpm").addEventListener("click", (e) => {
+    bpmcounter.recordTimestamp();
+  });
+  initInput("#beat-shuffle", VJ_DATA.beatEffect, "shuffle", (e) => {
+    return e.target.checked;
+  });
+  initInput("#beat-bounce", VJ_DATA.beatEffect, "bounce", (e) => {
+    return e.target.checked;
+  });
+  initInput("#beat-flash", VJ_DATA.beatEffect, "flash", (e) => {
+    return e.target.checked;
+  });
+  initInput("#beat-invert-color", VJ_DATA.beatEffect, "invertColor", (e) => {
+    return e.target.checked;
+  });
+
+  // Logo
+  const logo = document.querySelector("#logo");
+  const logoPreview = logo.querySelector("#logo-preview");
+  const logoInput = logo.querySelector("input[type=file]");
+
+  logo.addEventListener("dragover", (event) => {
+    event.preventDefault();
+    logo.classList.add("highlight");
+  });
+
+  logo.addEventListener("dragleave", () => {
+    logo.classList.remove("highlight");
+  });
+
+  logo.addEventListener("drop", (event) => {
+    event.preventDefault();
+    logo.classList.remove("highlight");
+
+    loadLogo(event.dataTransfer.files[0]);
+  });
+
+  logoInput.addEventListener("change", function (event) {
+    const file = event.target.files[0];
+    loadLogo(file);
+  });
+
+  logoPreview.addEventListener("click", () => {
+    logoInput.click();
+  });
+
+  initInput("#display-logo", VJ_DATA.logo, "display", (e) => {
+    return e.target.checked;
+  });
+  initInput("#logo-size", VJ_DATA.logo, "size", (e) => {
+    return parseFloat(e.target.value);
+  });
+  initInput("#logo-opacity", VJ_DATA.logo, "opacity", (e) => {
+    return parseFloat(e.target.value);
+  });
+  initInput("#logo-random-position", VJ_DATA.logo, "randomPos", (e) => {
+    const randomPos = e.target.checked;
+    const logoFixedPos = document.querySelectorAll(".logo-fixed-position");
+    const logoRandomPos = document.querySelectorAll(".logo-random-position");
+    if (randomPos) {
+      logoFixedPos.forEach((e) => e.classList.add("hidden"));
+      logoRandomPos.forEach((e) => e.classList.remove("hidden"));
+    } else {
+      logoRandomPos.forEach((e) => e.classList.add("hidden"));
+      logoFixedPos.forEach((e) => e.classList.remove("hidden"));
+    }
+    return randomPos;
+  });
+  initInput("#logo-pos-x", VJ_DATA.logo, "posX", (e) => {
+    return parseFloat(e.target.value);
+  });
+  initInput("#logo-pos-y", VJ_DATA.logo, "posY", (e) => {
+    return parseFloat(e.target.value);
+  });
+  initInput("#logo-random-freq", VJ_DATA.logo, "randomFreq", (e) => {
+    return parseFloat(e.target.value);
+  });
+  initInput("#logo-random-count", VJ_DATA.logo, "randomCount", (e) => {
+    return parseFloat(e.target.value);
+  });
 }
 
-const medias = document.getElementById("medias");
-const medias_fileInput = document.getElementById("media");
-
-medias.addEventListener("dragover", (event) => {
-  event.preventDefault();
-  medias.classList.add("highlight");
-});
-
-medias.addEventListener("dragleave", () => {
-  medias.classList.remove("highlight");
-});
-
-medias.addEventListener("drop", (event) => {
-  event.preventDefault();
-  medias.classList.remove("highlight");
-
-  const files = event.dataTransfer.files;
-  if (files.length) {
-    medias_fileInput.files = files;
-    medias_fileInput.dispatchEvent(new Event("change"));
-  }
-});
-
-document.getElementById("add-media").addEventListener("click", () => {
-  medias_fileInput.click();
-});
-
-// メディアファイルをアップロードしてプレビューを表示
-medias_fileInput.addEventListener("change", function (event) {
-  const files = event.target.files;
-  // 既存のプレビューをクリアするのではなく、上書きしない
+function loadMedias(files) {
   Array.from(files).forEach((file) => {
-    const url = URL.createObjectURL(file);
-    const media = { name: file.name, type: file.type.split("/")[0], url: url };
-    VJ_DATA.mediaList.push(media); // メディアリストに追加
-    if (!VJ_DATA.mediaFile) {
-      VJ_DATA.mediaFile = media.url;
-      sendToProjectionWindow();
+    const media = mediaManager.addMedia(file);
+    if (!media) {
+      return;
     }
 
-    // プレビューを作成（静止画として表示）
     const previewItem = document.createElement("div");
     previewItem.className = "item";
     if (media.type === "image") {
-      previewItem.style.backgroundImage = `url(${url})`;
+      previewItem.style.backgroundImage = `url(${media.url})`;
     }
     if (media.type === "video") {
       const video = document.createElement("video");
-      video.src = url;
+      video.src = media.url;
       previewItem.appendChild(video);
     }
 
@@ -82,201 +238,109 @@ medias_fileInput.addEventListener("change", function (event) {
 
     // クリックでメディアを選択
     previewItem.addEventListener("click", () => {
-      if (isShiftPressed) {
+      if (shiftListener.isShiftPressed) {
+        mediaManager.removeMedia(media.url);
         medias.removeChild(previewItem);
-
-        // メディアリストから削除
-        VJ_DATA.mediaList = VJ_DATA.mediaList.filter(
-          (media) => media.url !== url
-        );
-        if (VJ_DATA.mediaFile === url) {
-          if (VJ_DATA.mediaList.length !== 0) {
-            VJ_DATA.mediaFile = VJ_DATA.mediaList[0].url;
-          } else {
-            VJ_DATA.mediaFile = null;
-          }
-        }
-        sendToProjectionWindow();
       } else {
-        VJ_DATA.mediaFile = media.url;
-        if (media.type === "video") {
-          VJ_DATA.screenEffect = "single";
-          document.getElementById("screenEffect").value = "single";
-        }
-        sendToProjectionWindow();
+        mediaManager.selectMedia(media.url);
       }
     });
   });
-});
-
-const logo_droparea = document.getElementById("logoDroparea");
-const logo_preview = document.getElementById("logoPreview");
-const logo_fileInput = document.getElementById("logo");
-
-logo_droparea.addEventListener("dragover", (event) => {
-  event.preventDefault();
-  logo_droparea.classList.add("highlight");
-});
-
-logo_droparea.addEventListener("dragleave", () => {
-  logo_droparea.classList.remove("highlight");
-});
-
-logo_droparea.addEventListener("drop", (event) => {
-  event.preventDefault();
-  logo_droparea.classList.remove("highlight");
-
-  const files = event.dataTransfer.files;
-  if (files.length) {
-    logo_fileInput.files = files;
-    logo_fileInput.dispatchEvent(new Event("change"));
-  }
-});
-
-logo_preview.addEventListener("click", () => {
-  logo_fileInput.click();
-});
-
-logo_fileInput.addEventListener("change", function (event) {
-  const file = event.target.files[0];
-  const url = URL.createObjectURL(file);
-
-  logo = url;
-  logo_preview.innerHTML = "";
-  const img = document.createElement("img");
-  img.src = url;
-  logo_preview.appendChild(img);
-  sendToProjectionWindow();
-});
-
-document.querySelector("#invertColor").addEventListener("change", (e) => {
-  VJ_DATA.invertColor = e.target.checked;
-  if (VJ_DATA.invertColor) {
-    document.getElementById("invertColorWithBPM").parentElement.style.display =
-      "block";
-  } else {
-    document.getElementById("invertColorWithBPM").parentElement.style.display =
-      "none";
-  }
-  sendToProjectionWindow();
-});
-
-// プロジェクションウィンドウを開く
-document
-  .getElementById("openProjection")
-  .addEventListener("click", function () {
-    projectionWindow = window.open(
-      "projection.html",
-      "Projection Window",
-      "width=800,height=600"
-    );
-  });
-
-// リセットボタン
-document.getElementById("resetEffects").addEventListener("click", function () {
-  VJ_DATA.mediaFile = null;
-  VJ_DATA.text = null;
-  VJ_DATA.font = "Arial"; // リセット時のフォントはデフォルト
-  VJ_DATA.logoFile = null;
-  document.getElementById("text").value = null;
-  document.getElementById("screenEffect").value = "none";
-  document.getElementById("shuffle").checked = false;
-  document.getElementById("randomBpmControl").style.display = "none";
-  document.getElementById("aspectRatio").value = "16:9";
-  sendToProjectionWindow();
-});
-
-// プロジェクションウィンドウにデータを送信
-function sendToProjectionWindow() {
-  if (projectionWindow && !projectionWindow.closed) {
-    VJ_DATA.text = document.getElementById("text").value;
-    VJ_DATA.font = document.getElementById("font").value;
-    VJ_DATA.fontSize = document.getElementById("font-size").value;
-    VJ_DATA.fontColor = document.getElementById("font-color").value;
-    VJ_DATA.backColor = document.getElementById("back-color").value;
-    VJ_DATA.backOpacity = +document.getElementById("back-opacity").value;
-    VJ_DATA.randomBpm = parseFloat(document.getElementById("randomBpm").value);
-    VJ_DATA.aspectRatio = document.getElementById("aspectRatio").value;
-    VJ_DATA.tileCount = +document.getElementById("tile-count").value;
-    VJ_DATA.mediaDisplay = document.getElementById("media-display").value;
-    VJ_DATA.backgroundColor = document.getElementById("background-color").value;
-    VJ_DATA.invertColorWithBPM =
-      document.getElementById("invertColorWithBPM").checked;
-    VJ_DATA.shuffle = document.getElementById("shuffle").checked;
-    VJ_DATA.bpmTileAnimation = document.getElementById("bpmTileAnimation").checked;
-    VJ_DATA.flash = document.getElementById("flash").checked;
-    VJ_DATA.screenEffect = document.getElementById("screenEffect").value;
-    VJ_DATA.logo = document.getElementById("displayLogo").checked ? logo : null;
-    VJ_DATA.logoSize = document.getElementById("logo-size").value;
-    VJ_DATA.logoPosX = document.getElementById("logo-pos-x").value;
-    VJ_DATA.logoPosY = document.getElementById("logo-pos-y").value;
-    VJ_DATA.logoOpacity = document.getElementById("logo-opacity").value;
-    VJ_DATA.logoRandomPos = document.querySelector(
-      "#logo-random-position"
-    ).checked;
-    VJ_DATA.logoRandomFreq = document.querySelector("#logo-random-freq").value;
-    VJ_DATA.logoRandomCount =
-      document.querySelector("#logo-random-count").value;
-
-    const tileSettings = document.querySelectorAll(".media-effect-tile");
-    if (VJ_DATA.screenEffect === "continuous") {
-      tileSettings.forEach((e) => e.classList.remove("hidden"));
-    } else {
-      tileSettings.forEach((e) => e.classList.add("hidden"));
-    }
-    const logoFixedPos = document.querySelectorAll(".logo-fixed-position");
-    const logoRandomPos = document.querySelectorAll(".logo-random-position");
-    if (VJ_DATA.logoRandomPos) {
-      logoFixedPos.forEach((e) => e.classList.add("hidden"));
-      logoRandomPos.forEach((e) => e.classList.remove("hidden"));
-    } else {
-      logoRandomPos.forEach((e) => e.classList.add("hidden"));
-      logoFixedPos.forEach((e) => e.classList.remove("hidden"));
-    }
-    projectionWindow.postMessage({ vjdesu: VJ_DATA }, PAGE_ORIGIN || "*");
-  }
 }
 
-let clickTimes = [];
-const MAX_CLICKS = 8;
-let measureBPM_timeout;
-function measureBPM() {
-  const now = Date.now();
-  clickTimes.push(now);
-
-  clearTimeout(measureBPM_timeout);
-
-  if (clickTimes.length > MAX_CLICKS) {
-    clickTimes.shift();
-  }
-
-  if (clickTimes.length > 1) {
-    const intervals = [];
-    for (let i = 1; i < clickTimes.length; i++) {
-      intervals.push(clickTimes[i] - clickTimes[i - 1]);
+function loadLogo(file) {
+  if (file) {
+    if (file.type.split("/")[0] !== "image") {
+      return;
     }
+    const url = URL.createObjectURL(file);
+    const logoPreview = logo.querySelector("#logo-preview");
 
-    const avgInterval = intervals.reduce((a, b) => a + b) / intervals.length;
-    const bpm = Math.round(60000 / avgInterval);
+    logoPreview.innerHTML = "";
+    const img = document.createElement("img");
+    img.src = url;
+    logoPreview.appendChild(img);
 
-    measureBPM_timeout = setTimeout(() => {
-      clickTimes = [];
-    }, avgInterval * 2);
-
-    document.getElementById("randomBpm").value = bpm;
+    VJ_DATA.logo.url = url;
     sendToProjectionWindow();
   }
 }
 
-/**
- * Common Functions
- */
-
-function isFormElement(element) {
-  return (
-    element instanceof HTMLInputElement ||
-    element instanceof HTMLTextAreaElement ||
-    element instanceof HTMLSelectElement ||
-    element instanceof HTMLButtonElement
+function openProjectionWindow() {
+  projectionWindow = window.open(
+    "projection.html",
+    "Projection Window",
+    "width=800,height=600"
   );
+}
+
+function sendToProjectionWindow() {
+  if (projectionWindow && !projectionWindow.closed) {
+    projectionWindow.postMessage({ vjdesu: VJ_DATA }, location.origin);
+  }
+}
+
+function initInput(selector, obj, prop, onInputListener) {
+  const target = document.querySelector(selector);
+
+  if (!target) {
+    console.warn(`Element not found: "${selector}"`);
+    return;
+  }
+
+  const isCheckbox = target.type.toLowerCase() === "checkbox";
+
+  const applyValueToInput = (val) => {
+    if (isCheckbox) {
+      target.checked = val;
+    } else {
+      target.value = val;
+    }
+  };
+
+  const _listener = (e) => {
+    const result = onInputListener(e);
+    if (result !== undefined) {
+      if (obj[prop] !== result) {
+        obj[prop] = result;
+        mediaManager.update();
+        sendToProjectionWindow();
+      }
+      applyValueToInput(result);
+    }
+  };
+
+  applyValueToInput(obj[prop]);
+  target.addEventListener("input", _listener);
+  target.addEventListener("change", _listener);
+}
+
+/**
+ * Adds autocomplete behavior to an input element specified by a selector.
+ *
+ * This function allows the input element to clear its value temporarily on focus
+ * and reapply it immediately to trigger autocomplete suggestions.
+ * Additionally, the input element will lose focus when its value changes.
+ *
+ * @param {string} selector - A CSS selector for selecting the target input element.
+ */
+function addAutoCompleteBehavior(selector) {
+  const inputElement = document.querySelector(selector);
+
+  if (!inputElement) {
+    console.warn(`Element not found: "${selector}"`);
+    return;
+  }
+
+  inputElement.addEventListener("focus", () => {
+    const currentValue = inputElement.value;
+    inputElement.value = "";
+    setTimeout(() => {
+      inputElement.value = currentValue;
+    }, 1);
+  });
+
+  inputElement.addEventListener("change", () => {
+    inputElement.blur();
+  });
 }
