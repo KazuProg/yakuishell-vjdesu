@@ -8,7 +8,7 @@ let mediaLayer;
 let logoLayer;
 
 window.addEventListener("load", () => {
-  mediaLayer = document.getElementById("media");
+  mediaLayer = document.getElementById("media-layer");
   logoLayer = document.querySelector("#logo-layer");
   for (const key in VJ_DATA) {
     applyEffect(key, VJ_DATA[key], {});
